@@ -9,13 +9,13 @@ public class IndividualPersistenceMapper {
 
     public static IndividualJPAEntity fromDomainModel(Individual individual) {
         return new IndividualJPAEntity(
-                individual.id().getId(),
+                individual.id().getValue(),
                 individual.fullName().firstName(),
                 individual.fullName().secondName(),
                 individual.fullName().surname(),
                 individual.email().value(),
                 individual.phoneNumber().value(),
-                individual.birthdate().date()
+                individual.birthdate().value()
         );
     }
 

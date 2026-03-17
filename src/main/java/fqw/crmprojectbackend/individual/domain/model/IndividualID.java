@@ -9,7 +9,7 @@ import java.util.UUID;
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class IndividualID {
-    private final UUID id;
+    private final UUID value;
 
     public static IndividualID generateID() {
         return new IndividualID(UUID.randomUUID());

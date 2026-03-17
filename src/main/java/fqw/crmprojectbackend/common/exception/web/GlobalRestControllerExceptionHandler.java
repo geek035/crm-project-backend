@@ -4,12 +4,13 @@ import fqw.crmprojectbackend.common.model.web.WebError;
 import jakarta.validation.constraints.NotNull;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import java.lang.reflect.Array;
 import java.util.List;
 
 @RestControllerAdvice
@@ -24,6 +25,18 @@ public class GlobalRestControllerExceptionHandler {
                 List.of(exception.getMessage()));
 
         return ResponseEntity.status(exception.getCode().getStatus()).body(error);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<WebError> handleMethodArgumentTypeMismatchException(
+            @NotNull MethodArgumentTypeMismatchException exception) {
+        var error = new WebError(
+                HttpStatus.BAD_REQUEST.value(),
+                "Ошибка преобразования аргумента",
+                List.of(exception.getMessage())
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

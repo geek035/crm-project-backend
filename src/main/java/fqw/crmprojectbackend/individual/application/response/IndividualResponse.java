@@ -1,14 +1,14 @@
-package fqw.crmprojectbackend.individual.adapter.in.web.response;
+package fqw.crmprojectbackend.individual.application.response;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
-public record IndividualDTO(
+public record IndividualResponse(
         UUID id,
         String firstName,
         String secondName,
         String surname,
         String email,
         String phoneNumber,
-        LocalDate birthdate) {
-}
+        LocalDate birthdate
+) {}

@@ -34,6 +34,6 @@ public class IndividualAddService implements IndividualAddUseCase {
 
         var individual = this.individualRepository.save(individualToSave);
 
-        return individual.id().getId();
+        return individual.id().getValue();
     }
 }
