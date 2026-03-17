@@ -4,6 +4,7 @@ import fqw.crmprojectbackend.individual.adapter.out.persistence.mapper.Individua
 import fqw.crmprojectbackend.individual.application.port.out.IndividualRepository;
 import fqw.crmprojectbackend.individual.domain.model.Individual;
 import fqw.crmprojectbackend.individual.domain.model.IndividualEmail;
+import fqw.crmprojectbackend.individual.domain.model.IndividualID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -26,6 +27,13 @@ public class JPAIndividualPersistenceAdapter implements IndividualRepository {
     public Optional<Individual> findByEmail(IndividualEmail email) {
         return this.springDataIndividualRepository
                 .findByEmail(email.value())
+                .map(IndividualPersistenceMapper::toDomainModel);
+    }
+
+    @Override
+    public Optional<Individual> findById(IndividualID id) {
+        return this.springDataIndividualRepository
+                .findById(id.getValue())
                 .map(IndividualPersistenceMapper::toDomainModel);
     }
 }
