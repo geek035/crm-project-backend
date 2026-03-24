@@ -2,17 +2,17 @@ package fqw.crmprojectbackend.individual.adapter.out.persistence.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
-@Entity
-@Table(name = "individuals")
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
+@Entity
+@Table(name = "individuals")
 public class IndividualJPAEntity {
 
     @Id

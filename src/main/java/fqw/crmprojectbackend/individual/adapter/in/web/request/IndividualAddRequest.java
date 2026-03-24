@@ -1,8 +1,8 @@
 package fqw.crmprojectbackend.individual.adapter.in.web.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import fqw.crmprojectbackend.common.validator.EmailValidator;
-import fqw.crmprojectbackend.common.validator.PhoneNumberValidator;
+import fqw.crmprojectbackend.common.validation.EmailValidator;
+import fqw.crmprojectbackend.common.validation.PhoneNumberValidator;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;

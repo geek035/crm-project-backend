@@ -1,13 +1,19 @@
 package fqw.crmprojectbackend.individual.adapter.in.web.mapper;
 
+import fqw.crmprojectbackend.common.query.FilterCriterionMatchMode;
+import fqw.crmprojectbackend.common.query.FilterCriterion;
 import fqw.crmprojectbackend.individual.adapter.in.web.request.IndividualAddRequest;
+import fqw.crmprojectbackend.individual.adapter.in.web.request.IndividualQueryRequest;
 import fqw.crmprojectbackend.individual.adapter.in.web.response.IndividualDTO;
 import fqw.crmprojectbackend.individual.application.command.IndividualAddCommand;
-import fqw.crmprojectbackend.individual.application.command.IndividualSelectByIDCommand;
+import fqw.crmprojectbackend.individual.application.query.IndividualByParamsQuery;
 import fqw.crmprojectbackend.individual.application.response.IndividualResponse;
 
+import java.util.List;
+
 public class IndividualWebMapper {
-    private IndividualWebMapper() {}
+    private IndividualWebMapper() {
+    }
 
     public static IndividualDTO toDTO(IndividualResponse from) {
         return new IndividualDTO(
@@ -29,5 +35,20 @@ public class IndividualWebMapper {
                 from.email(),
                 from.phoneNumber(),
                 from.birthdate());
+    }
+
+    public static IndividualByParamsQuery toApplicationModel(IndividualQueryRequest from) {
+        var sort = from.sort();
+        var pageNumber = from.pageNumber();
+        var pageSize = from.pageSize();
+        var filters = from.filters().stream()
+                .map(it -> new FilterCriterion(
+                        it.field(),
+                        it.value(),
+                        FilterCriterionMatchMode.getByMatchMode(it.matchMode())))
+                .toList();
+
+
+        return new IndividualByParamsQuery(pageSize, pageNumber, sort, filters);
     }
 }

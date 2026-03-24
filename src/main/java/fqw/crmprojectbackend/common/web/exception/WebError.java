@@ -1,4 +1,4 @@
-package fqw.crmprojectbackend.common.model.web;
+package fqw.crmprojectbackend.common.web.exception;
 
 import java.util.List;
 

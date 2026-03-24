@@ -1,6 +1,6 @@
 package fqw.crmprojectbackend.individual.domain.model;
 
-import fqw.crmprojectbackend.common.validator.EmailValidator;
+import fqw.crmprojectbackend.common.validation.EmailValidator;
 import fqw.crmprojectbackend.individual.domain.exception.IndividualInvalidEmailException;
 
 import java.util.Objects;
