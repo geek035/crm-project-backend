@@ -1,14 +1,16 @@
 package fqw.crmprojectbackend.individual.adapter.in.web;
 
-import fqw.crmprojectbackend.common.exception.web.APIErrorCode;
-import fqw.crmprojectbackend.common.exception.web.GeneralAPIException;
-import fqw.crmprojectbackend.individual.adapter.in.web.exception.IndividualDuplicateEmailException;
+import fqw.crmprojectbackend.common.web.exception.APIErrorCode;
+import fqw.crmprojectbackend.common.web.exception.GeneralAPIException;
+import fqw.crmprojectbackend.individual.adapter.in.web.response.IndividualPageDTO;
+import fqw.crmprojectbackend.individual.application.exception.IndividualDuplicateEmailException;
 import fqw.crmprojectbackend.individual.adapter.in.web.mapper.IndividualWebMapper;
 import fqw.crmprojectbackend.individual.adapter.in.web.request.IndividualAddRequest;
+import fqw.crmprojectbackend.individual.adapter.in.web.request.IndividualQueryRequest;
 import fqw.crmprojectbackend.individual.adapter.in.web.response.IndividualDTO;
-import fqw.crmprojectbackend.individual.application.command.IndividualSelectByIDCommand;
+import fqw.crmprojectbackend.individual.application.query.IndividualByIDQuery;
 import fqw.crmprojectbackend.individual.application.port.in.IndividualAddUseCase;
-import fqw.crmprojectbackend.individual.application.port.in.IndividualSelectUseCase;
+import fqw.crmprojectbackend.individual.application.port.in.IndividualQueryUseCase;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -23,13 +26,28 @@ import java.util.UUID;
 @RequestMapping(path = "individuals")
 public class IndividualController {
     private final IndividualAddUseCase individualAddUseCase;
-    private final IndividualSelectUseCase individualSelectUseCase;
+    private final IndividualQueryUseCase individualQueryUseCase;
+
+    @PostMapping(path="query")
+    public ResponseEntity<IndividualPageDTO> getIndividualsByParams(
+            @RequestBody(required = false) @Valid IndividualQueryRequest body) {
+
+        var params = IndividualWebMapper.toApplicationModel(body);
+        var individuals = this.individualQueryUseCase.findByParams(params);
+        var data = individuals.data().stream()
+                .map(IndividualWebMapper::toDTO)
+                .toList();
+
+        var response = new IndividualPageDTO(individuals.total(), data);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 
     @GetMapping(path = "{id}")
-    public ResponseEntity<IndividualDTO> getIndividual(
+    public ResponseEntity<IndividualDTO> getIndividualById(
             @PathVariable @Valid @NotNull UUID id) {
-        var individual = individualSelectUseCase
-                .findById(new IndividualSelectByIDCommand(id))
+        var individual = individualQueryUseCase
+                .findById(new IndividualByIDQuery(id))
                 .map(IndividualWebMapper::toDTO);
 
         if (individual.isEmpty())
@@ -41,7 +59,7 @@ public class IndividualController {
 
     }
 
-    @PostMapping
+    @PostMapping(path="create")
     public ResponseEntity<UUID> addIndividual(
             @RequestBody @Valid IndividualAddRequest body)
             throws IndividualDuplicateEmailException {

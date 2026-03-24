@@ -1,9 +1,12 @@
 package fqw.crmprojectbackend.individual.adapter.in.web.exception;
 
-import fqw.crmprojectbackend.common.exception.web.APIErrorCode;
-import fqw.crmprojectbackend.common.model.web.WebError;
+import fqw.crmprojectbackend.common.web.exception.APIErrorCode;
+import fqw.crmprojectbackend.common.web.exception.WebError;
 import fqw.crmprojectbackend.individual.adapter.in.web.IndividualController;
+import fqw.crmprojectbackend.individual.application.exception.IndividualDuplicateEmailException;
 import fqw.crmprojectbackend.individual.domain.exception.IndividualInvalidEmailException;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.List;
 
 @RestControllerAdvice(basePackageClasses = IndividualController.class)
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class IndividualExceptionHandler {
 
     @ExceptionHandler(IndividualDuplicateEmailException.class)

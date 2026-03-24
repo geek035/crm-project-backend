@@ -1,4 +1,4 @@
-package fqw.crmprojectbackend.common.exception.web;
+package fqw.crmprojectbackend.common.web.exception;
 
 import lombok.Getter;
 
