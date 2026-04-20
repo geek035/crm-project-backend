@@ -4,9 +4,9 @@ import lombok.Getter;
 
 public class GeneralAPIException extends RuntimeException {
     @Getter
-    private final APIErrorCode code;
+    private final HTTPErrorCode code;
 
-    public GeneralAPIException(APIErrorCode code, String message) {
+    public GeneralAPIException(HTTPErrorCode code, String message) {
         super(message);
         this.code = code;
     }

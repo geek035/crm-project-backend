@@ -15,6 +15,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.domain.UpdateSpecification;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -78,5 +79,14 @@ public class IndividualPersistenceJPAAdapter implements IndividualRepository {
     @Override
     public Long getTotal() {
         return this.individualSpringDataRepository.count();
+    }
+
+    @Override
+    public Individual update(Individual individual) {
+
+        var entity = IndividualPersistenceMapper.fromDomainModel(individual);
+//        var updated = this.individualSpringDataRepository.update(entity);
+//
+        return IndividualPersistenceMapper.toDomainModel(entity);
     }
 }

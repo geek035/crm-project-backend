@@ -1,7 +1,7 @@
 package fqw.crmprojectbackend.common.web.exception;
 
-import fqw.crmprojectbackend.common.query.exception.IllegalFilterMatchModeException;
-import fqw.crmprojectbackend.common.query.exception.UnknowQueryPropertyException;
+import fqw.crmprojectbackend.common.query.criterion.filter.IllegalFilterMatchModeException;
+import fqw.crmprojectbackend.common.query.UnknowQueryPropertyException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,12 +29,12 @@ public class GlobalRestControllerExceptionHandler {
         log.error(exception);
 
         var error = new WebError(
-                APIErrorCode.INTERNAL_ERROR.getStatus().value(),
-                APIErrorCode.INTERNAL_ERROR.getTitle(),
+                HTTPErrorCode.INTERNAL_ERROR.getStatus().value(),
+                HTTPErrorCode.INTERNAL_ERROR.getTitle(),
                 List.of(exception.getMessage()));
 
         return ResponseEntity
-                .status(APIErrorCode.INTERNAL_ERROR.getStatus())
+                .status(HTTPErrorCode.INTERNAL_ERROR.getStatus())
                 .body(error);
     }
 
@@ -71,11 +71,11 @@ public class GlobalRestControllerExceptionHandler {
                 .toList();
 
         var error = new WebError(
-                APIErrorCode.VALIDATION_ERROR.getStatus().value(),
-                APIErrorCode.VALIDATION_ERROR.getTitle(),
+                HTTPErrorCode.VALIDATION_ERROR.getStatus().value(),
+                HTTPErrorCode.VALIDATION_ERROR.getTitle(),
                 messages);
 
-        return ResponseEntity.status(APIErrorCode.VALIDATION_ERROR.getStatus()).body(error);
+        return ResponseEntity.status(HTTPErrorCode.VALIDATION_ERROR.getStatus()).body(error);
     }
 
     @ExceptionHandler({
@@ -84,11 +84,11 @@ public class GlobalRestControllerExceptionHandler {
     })
     public ResponseEntity<WebError> handleFilterException(RuntimeException exception) {
         var error = new WebError(
-                APIErrorCode.VALIDATION_ERROR.getStatus().value(),
-                APIErrorCode.VALIDATION_ERROR.getTitle(),
+                HTTPErrorCode.VALIDATION_ERROR.getStatus().value(),
+                HTTPErrorCode.VALIDATION_ERROR.getTitle(),
                 List.of(exception.getMessage()));
 
-        return ResponseEntity.status(APIErrorCode.VALIDATION_ERROR.getStatus()).body(error);
+        return ResponseEntity.status(HTTPErrorCode.VALIDATION_ERROR.getStatus()).body(error);
     }
 
     @ExceptionHandler(PropertyReferenceException.class)
@@ -99,10 +99,10 @@ public class GlobalRestControllerExceptionHandler {
                 exception.getPropertyName());
 
         var error = new WebError(
-                APIErrorCode.VALIDATION_ERROR.getStatus().value(),
-                APIErrorCode.VALIDATION_ERROR.getTitle(),
+                HTTPErrorCode.VALIDATION_ERROR.getStatus().value(),
+                HTTPErrorCode.VALIDATION_ERROR.getTitle(),
                 List.of(message));
 
-        return ResponseEntity.status(APIErrorCode.VALIDATION_ERROR.getStatus()).body(error);
+        return ResponseEntity.status(HTTPErrorCode.VALIDATION_ERROR.getStatus()).body(error);
     }
 }

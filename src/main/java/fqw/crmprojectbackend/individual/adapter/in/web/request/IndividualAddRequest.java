@@ -30,6 +30,6 @@ public record IndividualAddRequest(
         String phoneNumber,
 
         @NotNull
-        @JsonFormat(pattern = "dd-MM-yyyy")
+        @JsonFormat(pattern = "yyyy-MM-dd")
         LocalDate birthdate
 ) {}

@@ -1,6 +1,5 @@
-package fqw.crmprojectbackend.common.query;
+package fqw.crmprojectbackend.common.query.criterion.filter;
 
-import fqw.crmprojectbackend.common.query.exception.IllegalFilterMatchModeException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

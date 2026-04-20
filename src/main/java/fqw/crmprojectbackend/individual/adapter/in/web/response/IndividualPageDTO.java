@@ -1,6 +1,6 @@
 package fqw.crmprojectbackend.individual.adapter.in.web.response;
 
-import fqw.crmprojectbackend.common.query.EntityPageDTO;
+import fqw.crmprojectbackend.common.web.response.EntityPageDTO;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;

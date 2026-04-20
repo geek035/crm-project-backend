@@ -1,9 +1,9 @@
 package fqw.crmprojectbackend.individual.adapter.in.web.exception;
 
-import fqw.crmprojectbackend.common.web.exception.APIErrorCode;
+import fqw.crmprojectbackend.common.web.exception.HTTPErrorCode;
 import fqw.crmprojectbackend.common.web.exception.WebError;
 import fqw.crmprojectbackend.individual.adapter.in.web.IndividualController;
-import fqw.crmprojectbackend.individual.application.exception.IndividualDuplicateEmailException;
+import fqw.crmprojectbackend.individual.domain.exception.IndividualDuplicateEmailException;
 import fqw.crmprojectbackend.individual.domain.exception.IndividualInvalidEmailException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -21,23 +21,23 @@ public class IndividualExceptionHandler {
     public ResponseEntity<WebError> handleIndividualDuplicateEmailException(
             IndividualDuplicateEmailException exception) {
         var error = new WebError(
-                APIErrorCode.CONFLICT.getStatus().value(),
-                APIErrorCode.CONFLICT.getTitle(),
+                HTTPErrorCode.CONFLICT.getStatus().value(),
+                HTTPErrorCode.CONFLICT.getTitle(),
                 List.of(exception.getMessage())
         );
 
-        return ResponseEntity.status(APIErrorCode.CONFLICT.getStatus()).body(error);
+        return ResponseEntity.status(HTTPErrorCode.CONFLICT.getStatus()).body(error);
     }
 
     @ExceptionHandler(IndividualInvalidEmailException.class)
     public ResponseEntity<WebError> handleIndividualInvalidEmailException(
             IndividualInvalidEmailException exception) {
         var error = new WebError(
-                APIErrorCode.VALIDATION_ERROR.getStatus().value(),
-                APIErrorCode.VALIDATION_ERROR.getTitle(),
+                HTTPErrorCode.VALIDATION_ERROR.getStatus().value(),
+                HTTPErrorCode.VALIDATION_ERROR.getTitle(),
                 List.of(exception.getMessage())
         );
 
-        return ResponseEntity.status(APIErrorCode.VALIDATION_ERROR.getStatus()).body(error);
+        return ResponseEntity.status(HTTPErrorCode.VALIDATION_ERROR.getStatus()).body(error);
     }
 }

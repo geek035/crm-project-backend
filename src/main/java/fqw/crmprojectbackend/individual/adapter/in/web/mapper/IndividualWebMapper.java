@@ -1,15 +1,13 @@
 package fqw.crmprojectbackend.individual.adapter.in.web.mapper;
 
-import fqw.crmprojectbackend.common.query.FilterCriterionMatchMode;
-import fqw.crmprojectbackend.common.query.FilterCriterion;
+import fqw.crmprojectbackend.common.query.criterion.filter.FilterCriterionMatchMode;
+import fqw.crmprojectbackend.common.query.criterion.filter.FilterCriterion;
 import fqw.crmprojectbackend.individual.adapter.in.web.request.IndividualAddRequest;
 import fqw.crmprojectbackend.individual.adapter.in.web.request.IndividualQueryRequest;
 import fqw.crmprojectbackend.individual.adapter.in.web.response.IndividualDTO;
 import fqw.crmprojectbackend.individual.application.command.IndividualAddCommand;
 import fqw.crmprojectbackend.individual.application.query.IndividualByParamsQuery;
 import fqw.crmprojectbackend.individual.application.response.IndividualResponse;
-
-import java.util.List;
 
 public class IndividualWebMapper {
     private IndividualWebMapper() {

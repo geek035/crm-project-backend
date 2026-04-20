@@ -18,4 +18,6 @@ public interface IndividualRepository {
     List<Individual> findByParams(IndividualByParamsQuery query);
 
     Long getTotal();
+
+    Individual update(Individual individual);
 }

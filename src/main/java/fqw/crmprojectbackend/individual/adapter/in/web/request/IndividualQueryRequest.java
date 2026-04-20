@@ -1,6 +1,6 @@
 package fqw.crmprojectbackend.individual.adapter.in.web.request;
 
-import fqw.crmprojectbackend.common.query.SortCriterion;
+import fqw.crmprojectbackend.common.query.criterion.sort.SortCriterion;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;

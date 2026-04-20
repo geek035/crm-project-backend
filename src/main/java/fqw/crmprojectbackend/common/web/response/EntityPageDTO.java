@@ -1,4 +1,4 @@
-package fqw.crmprojectbackend.common.query;
+package fqw.crmprojectbackend.common.web.response;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package fqw.crmprojectbackend.individual.application.exception;
+package fqw.crmprojectbackend.individual.domain.exception;
 
 public class IndividualDuplicateEmailException extends RuntimeException {
     public IndividualDuplicateEmailException(String message) {

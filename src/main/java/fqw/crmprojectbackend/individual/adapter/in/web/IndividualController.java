@@ -1,9 +1,9 @@
 package fqw.crmprojectbackend.individual.adapter.in.web;
 
-import fqw.crmprojectbackend.common.web.exception.APIErrorCode;
+import fqw.crmprojectbackend.common.web.exception.HTTPErrorCode;
 import fqw.crmprojectbackend.common.web.exception.GeneralAPIException;
 import fqw.crmprojectbackend.individual.adapter.in.web.response.IndividualPageDTO;
-import fqw.crmprojectbackend.individual.application.exception.IndividualDuplicateEmailException;
+import fqw.crmprojectbackend.individual.domain.exception.IndividualDuplicateEmailException;
 import fqw.crmprojectbackend.individual.adapter.in.web.mapper.IndividualWebMapper;
 import fqw.crmprojectbackend.individual.adapter.in.web.request.IndividualAddRequest;
 import fqw.crmprojectbackend.individual.adapter.in.web.request.IndividualQueryRequest;
@@ -18,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -52,7 +51,7 @@ public class IndividualController {
 
         if (individual.isEmpty())
             throw new GeneralAPIException(
-                    APIErrorCode.RESOURCE_NOT_FOUND,
+                    HTTPErrorCode.RESOURCE_NOT_FOUND,
                     String.format("Ресурс с id '%s' не найден", id));
 
         return ResponseEntity.status(HttpStatus.OK).body(individual.get());

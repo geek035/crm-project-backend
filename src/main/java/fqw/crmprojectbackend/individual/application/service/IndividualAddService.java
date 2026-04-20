@@ -1,19 +1,18 @@
 package fqw.crmprojectbackend.individual.application.service;
 
 import fqw.crmprojectbackend.common.persistent.jpa.exception.RepositoryConstraintException;
-import fqw.crmprojectbackend.individual.application.exception.IndividualDuplicateEmailException;
+import fqw.crmprojectbackend.individual.domain.exception.IndividualDuplicateEmailException;
 import fqw.crmprojectbackend.individual.application.command.IndividualAddCommand;
 import fqw.crmprojectbackend.individual.application.port.in.IndividualAddUseCase;
 import fqw.crmprojectbackend.individual.application.port.out.IndividualRepository;
 import fqw.crmprojectbackend.individual.domain.model.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class IndividualAddService implements IndividualAddUseCase {
     private final IndividualRepository individualRepository;
 
