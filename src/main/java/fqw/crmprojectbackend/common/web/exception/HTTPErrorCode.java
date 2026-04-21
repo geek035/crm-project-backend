@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
-public enum APIErrorCode {
+public enum HTTPErrorCode {
     VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "Ошибка валидации данных"),
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "Ресурс не найден"),
     CONFLICT(HttpStatus.CONFLICT, "Конфликт"),

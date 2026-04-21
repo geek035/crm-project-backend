@@ -1,10 +1,12 @@
 package fqw.crmprojectbackend.individual.adapter.in.web.exception;
 
-import fqw.crmprojectbackend.common.web.exception.APIErrorCode;
+import fqw.crmprojectbackend.common.web.exception.HTTPErrorCode;
 import fqw.crmprojectbackend.common.web.exception.WebError;
 import fqw.crmprojectbackend.individual.adapter.in.web.IndividualController;
-import fqw.crmprojectbackend.individual.application.exception.IndividualDuplicateEmailException;
+import fqw.crmprojectbackend.individual.domain.exception.IndividualDuplicateEmailException;
 import fqw.crmprojectbackend.individual.domain.exception.IndividualInvalidEmailException;
+import fqw.crmprojectbackend.individual.domain.exception.IndividualInvalidPhoneException;
+import fqw.crmprojectbackend.individual.domain.exception.IndividualNotExistsException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
@@ -21,23 +23,38 @@ public class IndividualExceptionHandler {
     public ResponseEntity<WebError> handleIndividualDuplicateEmailException(
             IndividualDuplicateEmailException exception) {
         var error = new WebError(
-                APIErrorCode.CONFLICT.getStatus().value(),
-                APIErrorCode.CONFLICT.getTitle(),
+                HTTPErrorCode.CONFLICT.getStatus().value(),
+                HTTPErrorCode.CONFLICT.getTitle(),
                 List.of(exception.getMessage())
         );
 
-        return ResponseEntity.status(APIErrorCode.CONFLICT.getStatus()).body(error);
+        return ResponseEntity.status(HTTPErrorCode.CONFLICT.getStatus()).body(error);
     }
 
-    @ExceptionHandler(IndividualInvalidEmailException.class)
-    public ResponseEntity<WebError> handleIndividualInvalidEmailException(
-            IndividualInvalidEmailException exception) {
+    @ExceptionHandler(IndividualNotExistsException.class)
+    public ResponseEntity<WebError> handleIndividualNotExistsException(
+            IndividualNotExistsException exception) {
         var error = new WebError(
-                APIErrorCode.VALIDATION_ERROR.getStatus().value(),
-                APIErrorCode.VALIDATION_ERROR.getTitle(),
+                HTTPErrorCode.RESOURCE_NOT_FOUND.getStatus().value(),
+                HTTPErrorCode.RESOURCE_NOT_FOUND.getTitle(),
                 List.of(exception.getMessage())
         );
 
-        return ResponseEntity.status(APIErrorCode.VALIDATION_ERROR.getStatus()).body(error);
+        return ResponseEntity.status(HTTPErrorCode.RESOURCE_NOT_FOUND.getStatus()).body(error);
+    }
+
+    @ExceptionHandler({
+            IndividualInvalidEmailException.class,
+            IndividualInvalidPhoneException.class,
+    })
+    public ResponseEntity<WebError> handleIndividualInvalidDataException(
+            IndividualInvalidEmailException exception) {
+        var error = new WebError(
+                HTTPErrorCode.VALIDATION_ERROR.getStatus().value(),
+                HTTPErrorCode.VALIDATION_ERROR.getTitle(),
+                List.of(exception.getMessage())
+        );
+
+        return ResponseEntity.status(HTTPErrorCode.VALIDATION_ERROR.getStatus()).body(error);
     }
 }

@@ -1,6 +1,6 @@
 package fqw.crmprojectbackend.individual.application.port.in;
 
-import fqw.crmprojectbackend.individual.application.exception.IndividualDuplicateEmailException;
+import fqw.crmprojectbackend.individual.domain.exception.IndividualDuplicateEmailException;
 import fqw.crmprojectbackend.individual.application.command.IndividualAddCommand;
 
 import java.util.UUID;

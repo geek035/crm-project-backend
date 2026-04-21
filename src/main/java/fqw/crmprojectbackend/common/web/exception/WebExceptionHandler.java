@@ -1,10 +1,9 @@
 package fqw.crmprojectbackend.common.web.exception;
 
-import fqw.crmprojectbackend.common.query.exception.IllegalFilterMatchModeException;
-import fqw.crmprojectbackend.common.query.exception.UnknowQueryPropertyException;
+import fqw.crmprojectbackend.common.query.criterion.filter.IllegalFilterMatchModeException;
+import fqw.crmprojectbackend.common.query.UnknowQueryPropertyException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -14,39 +13,44 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.List;
 
 @RestControllerAdvice
-@Order(Ordered.LOWEST_PRECEDENCE)
-public class GlobalRestControllerExceptionHandler {
+@Order(Ordered.HIGHEST_PRECEDENCE)
+public class WebExceptionHandler {
 
-    private static final Log log = LogFactory.getLog(GlobalRestControllerExceptionHandler.class);
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<WebError> handleUnexpectedException(Exception exception) {
-        log.error(exception);
-
-        var error = new WebError(
-                APIErrorCode.INTERNAL_ERROR.getStatus().value(),
-                APIErrorCode.INTERNAL_ERROR.getTitle(),
-                List.of(exception.getMessage()));
-
-        return ResponseEntity
-                .status(APIErrorCode.INTERNAL_ERROR.getStatus())
-                .body(error);
-    }
-
-    @ExceptionHandler(GeneralAPIException.class)
+    @ExceptionHandler(WebException.class)
     public ResponseEntity<WebError> handleGeneralAPIException(
-            GeneralAPIException exception) {
+            WebException exception) {
         var error = new WebError(
                 exception.getCode().getStatus().value(),
                 exception.getCode().getTitle(),
                 List.of(exception.getMessage()));
 
         return ResponseEntity.status(exception.getCode().getStatus()).body(error);
+    }
+
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<WebError> handleHandlerMethodValidationException(
+            HandlerMethodValidationException ex
+    ) {
+        var errors = ex.getAllErrors()
+                .stream()
+                .map(MessageSourceResolvable::getDefaultMessage)
+                .toList();
+
+        var response = new WebError(
+                HTTPErrorCode.VALIDATION_ERROR.getStatus().value(),
+                HTTPErrorCode.VALIDATION_ERROR.getTitle(),
+                errors
+        );
+
+        return ResponseEntity
+                .status(HTTPErrorCode.VALIDATION_ERROR.getStatus())
+                .body(response);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
@@ -71,11 +75,11 @@ public class GlobalRestControllerExceptionHandler {
                 .toList();
 
         var error = new WebError(
-                APIErrorCode.VALIDATION_ERROR.getStatus().value(),
-                APIErrorCode.VALIDATION_ERROR.getTitle(),
+                HTTPErrorCode.VALIDATION_ERROR.getStatus().value(),
+                HTTPErrorCode.VALIDATION_ERROR.getTitle(),
                 messages);
 
-        return ResponseEntity.status(APIErrorCode.VALIDATION_ERROR.getStatus()).body(error);
+        return ResponseEntity.status(HTTPErrorCode.VALIDATION_ERROR.getStatus()).body(error);
     }
 
     @ExceptionHandler({
@@ -84,11 +88,11 @@ public class GlobalRestControllerExceptionHandler {
     })
     public ResponseEntity<WebError> handleFilterException(RuntimeException exception) {
         var error = new WebError(
-                APIErrorCode.VALIDATION_ERROR.getStatus().value(),
-                APIErrorCode.VALIDATION_ERROR.getTitle(),
+                HTTPErrorCode.VALIDATION_ERROR.getStatus().value(),
+                HTTPErrorCode.VALIDATION_ERROR.getTitle(),
                 List.of(exception.getMessage()));
 
-        return ResponseEntity.status(APIErrorCode.VALIDATION_ERROR.getStatus()).body(error);
+        return ResponseEntity.status(HTTPErrorCode.VALIDATION_ERROR.getStatus()).body(error);
     }
 
     @ExceptionHandler(PropertyReferenceException.class)
@@ -99,10 +103,10 @@ public class GlobalRestControllerExceptionHandler {
                 exception.getPropertyName());
 
         var error = new WebError(
-                APIErrorCode.VALIDATION_ERROR.getStatus().value(),
-                APIErrorCode.VALIDATION_ERROR.getTitle(),
+                HTTPErrorCode.VALIDATION_ERROR.getStatus().value(),
+                HTTPErrorCode.VALIDATION_ERROR.getTitle(),
                 List.of(message));
 
-        return ResponseEntity.status(APIErrorCode.VALIDATION_ERROR.getStatus()).body(error);
+        return ResponseEntity.status(HTTPErrorCode.VALIDATION_ERROR.getStatus()).body(error);
     }
 }

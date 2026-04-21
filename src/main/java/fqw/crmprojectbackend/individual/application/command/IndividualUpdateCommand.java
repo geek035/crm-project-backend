@@ -1,9 +1,9 @@
-package fqw.crmprojectbackend.individual.application.response;
+package fqw.crmprojectbackend.individual.application.command;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
-public record IndividualResponse(
+public record IndividualUpdateCommand(
         UUID id,
         String firstName,
         String secondName,

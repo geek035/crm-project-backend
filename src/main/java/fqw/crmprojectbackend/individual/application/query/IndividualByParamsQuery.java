@@ -1,7 +1,7 @@
 package fqw.crmprojectbackend.individual.application.query;
 
-import fqw.crmprojectbackend.common.query.FilterCriterion;
-import fqw.crmprojectbackend.common.query.SortCriterion;
+import fqw.crmprojectbackend.common.query.criterion.filter.FilterCriterion;
+import fqw.crmprojectbackend.common.query.criterion.sort.SortCriterion;
 
 import java.util.List;
 

@@ -1,8 +1,8 @@
 package fqw.crmprojectbackend.common.persistent.jpa.spectification;
 
-import fqw.crmprojectbackend.common.query.FilterCriterionMatchMode;
-import fqw.crmprojectbackend.common.query.FilterCriterion;
-import fqw.crmprojectbackend.common.query.exception.UnknowQueryPropertyException;
+import fqw.crmprojectbackend.common.query.criterion.filter.FilterCriterionMatchMode;
+import fqw.crmprojectbackend.common.query.criterion.filter.FilterCriterion;
+import fqw.crmprojectbackend.common.query.UnknowQueryPropertyException;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
