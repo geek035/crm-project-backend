@@ -1,8 +1,9 @@
 package fqw.crmprojectbackend.individual.application.port.in;
 
 import fqw.crmprojectbackend.individual.application.command.IndividualUpdateCommand;
-import fqw.crmprojectbackend.individual.application.response.IndividualResponse;
+import fqw.crmprojectbackend.individual.application.dto.IndividualDTO;
+import fqw.crmprojectbackend.individual.domain.exception.IndividualDuplicateEmailException;
 
 public interface IndividualUpdateUseCase {
-    IndividualResponse update(IndividualUpdateCommand command);
+    IndividualDTO update(IndividualUpdateCommand command) throws IndividualDuplicateEmailException;
 }

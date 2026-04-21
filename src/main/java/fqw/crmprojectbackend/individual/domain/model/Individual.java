@@ -1,31 +1,32 @@
 package fqw.crmprojectbackend.individual.domain.model;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import java.time.LocalDate;
 import java.util.UUID;
 
-public record Individual(
-        IndividualID id,
-        IndividualFullName fullName,
-        IndividualEmail email,
-        IndividualPhoneNumber phoneNumber,
-        IndividualBirthdate birthdate
-        ) {
+@Getter
+@RequiredArgsConstructor
+public class Individual {
 
-    public static Individual restore(
-            UUID id,
-            String firstName,
-            String secondName,
-            String surname,
-            String email,
-            String phoneNumber,
-            LocalDate birthdate
-    ) {
-        return new Individual(
-                IndividualID.from(id),
-                new IndividualFullName(firstName, secondName, surname),
-                new IndividualEmail(email),
-                new IndividualPhoneNumber(phoneNumber),
-                new IndividualBirthdate(birthdate)
-        );
+    private final IndividualID id;
+    private final IndividualFullName fullName;
+    private final IndividualEmail email;
+    private final IndividualPhoneNumber phoneNumber;
+    private final IndividualBirthdate birthdate;
+
+    public Individual(UUID id,
+                      String firstName,
+                      String secondName,
+                      String surname,
+                      String email,
+                      String phoneNumber,
+                      LocalDate birthdate) {
+        this.id = IndividualID.from(id);
+        this.fullName = new IndividualFullName(firstName, secondName, surname);
+        this.email = new IndividualEmail(email);
+        this.phoneNumber = new IndividualPhoneNumber(phoneNumber);
+        this.birthdate = new IndividualBirthdate(birthdate);
     }
 }

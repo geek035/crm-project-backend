@@ -4,8 +4,9 @@ import fqw.crmprojectbackend.common.persistent.jpa.exception.RepositoryConstrain
 import fqw.crmprojectbackend.common.persistent.jpa.spectification.FilterSpecificationBuilder;
 import fqw.crmprojectbackend.individual.adapter.out.persistence.entity.IndividualJPAEntity;
 import fqw.crmprojectbackend.individual.adapter.out.persistence.mapper.IndividualPersistenceMapper;
-import fqw.crmprojectbackend.individual.application.port.out.IndividualRepository;
+import fqw.crmprojectbackend.individual.application.port.out.IndividualRepositoryPort;
 import fqw.crmprojectbackend.individual.application.query.IndividualByParamsQuery;
+import fqw.crmprojectbackend.individual.domain.exception.IndividualNotExistsException;
 import fqw.crmprojectbackend.individual.domain.model.Individual;
 import fqw.crmprojectbackend.individual.domain.model.IndividualEmail;
 import fqw.crmprojectbackend.individual.domain.model.IndividualID;
@@ -15,7 +16,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.domain.UpdateSpecification;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Repository
-public class IndividualPersistenceJPAAdapter implements IndividualRepository {
+public class IndividualRepositoryAdapter implements IndividualRepositoryPort {
     private final IndividualSpringDataRepository individualSpringDataRepository;
 
     @Override
@@ -44,6 +44,11 @@ public class IndividualPersistenceJPAAdapter implements IndividualRepository {
         return this.individualSpringDataRepository
                 .findByEmail(email.value())
                 .map(IndividualPersistenceMapper::toDomainModel);
+    }
+
+    @Override
+    public boolean existByEmail(IndividualEmail email) {
+        return this.individualSpringDataRepository.existsByEmail(email.value());
     }
 
     @Override
@@ -82,11 +87,24 @@ public class IndividualPersistenceJPAAdapter implements IndividualRepository {
     }
 
     @Override
+    @Transactional
     public Individual update(Individual individual) {
+        var id = individual.getId().getValue();
+        var entityOptional = this.individualSpringDataRepository.findById(id);
 
-        var entity = IndividualPersistenceMapper.fromDomainModel(individual);
-//        var updated = this.individualSpringDataRepository.update(entity);
-//
+        if (entityOptional.isEmpty()) {
+            throw new IndividualNotExistsException(String.format(
+                    "Физ. лицо с идентификатором '%s' не существует", id));
+        }
+
+        var entity = entityOptional.get();
+        entity.setFirstName(individual.getFullName().firstName());
+        entity.setSecondName(individual.getFullName().secondName());
+        entity.setSurname(individual.getFullName().surname());
+        entity.setEmail(individual.getEmail().value());
+        entity.setPhoneNumber(individual.getPhoneNumber().value());
+        entity.setBirthdate(individual.getBirthdate().value());
+
         return IndividualPersistenceMapper.toDomainModel(entity);
     }
 }

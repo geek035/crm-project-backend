@@ -1,40 +1,39 @@
 package fqw.crmprojectbackend.individual.application.service;
 
+import fqw.crmprojectbackend.individual.application.dto.IndividualDTO;
+import fqw.crmprojectbackend.individual.application.dto.IndividualPageDTO;
 import fqw.crmprojectbackend.individual.application.query.IndividualByIDQuery;
 import fqw.crmprojectbackend.individual.application.query.IndividualByParamsQuery;
-import fqw.crmprojectbackend.individual.application.mapper.IndividualCommandResponseMapper;
+import fqw.crmprojectbackend.individual.application.mapper.IndividualApplicationMapper;
 import fqw.crmprojectbackend.individual.application.port.in.IndividualQueryUseCase;
-import fqw.crmprojectbackend.individual.application.port.out.IndividualRepository;
-import fqw.crmprojectbackend.individual.application.response.IndividualQueryResponse;
-import fqw.crmprojectbackend.individual.application.response.IndividualResponse;
+import fqw.crmprojectbackend.individual.application.port.out.IndividualRepositoryPort;
 import fqw.crmprojectbackend.individual.domain.model.IndividualID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class IndividualQueryService implements IndividualQueryUseCase {
 
-    private final IndividualRepository individualRepository;
+    private final IndividualRepositoryPort individualRepositoryPort;
 
     @Override
-    public Optional<IndividualResponse> findById(IndividualByIDQuery command) {
-        return this.individualRepository
+    public Optional<IndividualDTO> findById(IndividualByIDQuery command) {
+        return this.individualRepositoryPort
                 .findById(IndividualID.from(command.id()))
-                .map(IndividualCommandResponseMapper::toIndividualResponse);
+                .map(IndividualApplicationMapper::toIndividualDTO);
     }
 
     @Override
-    public IndividualQueryResponse findByParams(IndividualByParamsQuery command) {
-        var data = this.individualRepository.findByParams(command).stream()
-                .map(IndividualCommandResponseMapper::toIndividualResponse)
+    public IndividualPageDTO findByParams(IndividualByParamsQuery command) {
+        var data = this.individualRepositoryPort.findByParams(command).stream()
+                .map(IndividualApplicationMapper::toIndividualDTO)
                 .toList();
 
-        var total = this.individualRepository.getTotal();
+        var total = this.individualRepositoryPort.getTotal();
 
-        return new IndividualQueryResponse(total, data);
+        return new IndividualPageDTO(total, data);
     }
 }

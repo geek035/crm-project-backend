@@ -1,4 +1,4 @@
-package fqw.crmprojectbackend.individual.adapter.in.web.response;
+package fqw.crmprojectbackend.individual.application.dto;
 
 import java.time.LocalDate;
 import java.util.UUID;

@@ -1,8 +1,6 @@
-package fqw.crmprojectbackend.individual.adapter.in.web.response;
+package fqw.crmprojectbackend.individual.application.dto;
 
 import fqw.crmprojectbackend.common.web.response.EntityPageDTO;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 
 import java.util.List;
@@ -11,10 +9,7 @@ import java.util.List;
 public class IndividualPageDTO extends EntityPageDTO<IndividualDTO> {
 
     public IndividualPageDTO(
-            @NotNull
-            @PositiveOrZero
             Long total,
-            @NotNull
             List<IndividualDTO> data) {
         super(total, data);
     }

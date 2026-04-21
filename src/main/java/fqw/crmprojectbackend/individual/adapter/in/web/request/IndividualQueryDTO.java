@@ -7,7 +7,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 
 import java.util.List;
 
-public record IndividualQueryRequest(
+public record IndividualQueryDTO(
         @PositiveOrZero
         @NotNull
         Integer pageNumber,
@@ -15,4 +15,4 @@ public record IndividualQueryRequest(
         @NotNull
         Integer pageSize,
         List<SortCriterion> sort,
-        List<IndividualQueryFilter> filters) {}
+        List<IndividualQueryFilterDTO> filters) {}
