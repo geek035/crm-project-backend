@@ -48,7 +48,7 @@ public class IndividualExceptionHandler {
             IndividualInvalidPhoneException.class,
     })
     public ResponseEntity<WebError> handleIndividualInvalidDataException(
-            IndividualInvalidEmailException exception) {
+            Exception exception) {
         var error = new WebError(
                 HTTPErrorCode.VALIDATION_ERROR.getStatus().value(),
                 HTTPErrorCode.VALIDATION_ERROR.getTitle(),
