@@ -22,7 +22,7 @@ public class CompanyAddService implements CompanyAddUseCase {
     public CompanyID add(CompanyAddCommand command) {
         var inn = new CompanyINN(command.inn());
 
-        if (this.companyRepositoryPort.existsByINN(inn)) {
+        if (this.companyRepositoryPort.existByINN(inn)) {
             throw new CompanyDuplicateINNException(String.format(
                     "Компания с ИНН '%s' уже зарегистрирована", command.inn()));
         }

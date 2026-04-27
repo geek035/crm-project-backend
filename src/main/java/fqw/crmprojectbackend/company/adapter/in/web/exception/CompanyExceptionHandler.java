@@ -6,6 +6,8 @@ import fqw.crmprojectbackend.company.adapter.in.web.CompanyController;
 import fqw.crmprojectbackend.company.domain.exception.CompanyDuplicateINNException;
 import fqw.crmprojectbackend.company.domain.exception.CompanyIllegalClientSegmentException;
 import fqw.crmprojectbackend.company.domain.exception.CompanyIllegalLifecycleStatusException;
+import fqw.crmprojectbackend.company.domain.exception.CompanyNotExistsException;
+import fqw.crmprojectbackend.individual.domain.exception.IndividualNotExistsException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
@@ -43,5 +45,17 @@ public class CompanyExceptionHandler {
         );
 
         return ResponseEntity.status(HTTPErrorCode.VALIDATION_ERROR.getStatus()).body(error);
+    }
+
+    @ExceptionHandler(CompanyNotExistsException.class)
+    public ResponseEntity<WebError> handleCompanyNotExistsException(
+            CompanyNotExistsException exception) {
+        var error = new WebError(
+                HTTPErrorCode.RESOURCE_NOT_FOUND.getStatus().value(),
+                HTTPErrorCode.RESOURCE_NOT_FOUND.getTitle(),
+                List.of(exception.getMessage())
+        );
+
+        return ResponseEntity.status(HTTPErrorCode.RESOURCE_NOT_FOUND.getStatus()).body(error);
     }
 }

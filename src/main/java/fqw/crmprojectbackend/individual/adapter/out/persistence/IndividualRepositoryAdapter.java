@@ -10,6 +10,7 @@ import fqw.crmprojectbackend.individual.domain.exception.IndividualNotExistsExce
 import fqw.crmprojectbackend.individual.domain.model.Individual;
 import fqw.crmprojectbackend.individual.domain.model.IndividualEmail;
 import fqw.crmprojectbackend.individual.domain.model.IndividualID;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -52,6 +53,11 @@ public class IndividualRepositoryAdapter implements IndividualRepositoryPort {
     }
 
     @Override
+    public boolean existByID(IndividualID id) {
+        return this.individualSpringDataRepository.existsById(id.getValue());
+    }
+
+    @Override
     public Optional<Individual> findById(IndividualID id) {
         return this.individualSpringDataRepository
                 .findById(id.getValue())
@@ -87,14 +93,12 @@ public class IndividualRepositoryAdapter implements IndividualRepositoryPort {
     }
 
     @Override
-    @Transactional
     public Individual update(Individual individual) {
         var id = individual.getId().getValue();
         var entityOptional = this.individualSpringDataRepository.findById(id);
 
         if (entityOptional.isEmpty()) {
-            throw new IndividualNotExistsException(String.format(
-                    "Физ. лицо с идентификатором '%s' не существует", id));
+            throw new EntityNotFoundException();
         }
 
         var entity = entityOptional.get();

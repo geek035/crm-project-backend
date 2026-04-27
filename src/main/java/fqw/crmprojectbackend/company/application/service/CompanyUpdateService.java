@@ -1,0 +1,50 @@
+package fqw.crmprojectbackend.company.application.service;
+
+import fqw.crmprojectbackend.company.application.command.CompanyUpdateCommand;
+import fqw.crmprojectbackend.company.application.dto.CompanyDTO;
+import fqw.crmprojectbackend.company.application.mapper.CompanyApplicationMapper;
+import fqw.crmprojectbackend.company.application.port.in.CompanyUpdateUseCase;
+import fqw.crmprojectbackend.company.application.port.out.CompanyRepositoryPort;
+import fqw.crmprojectbackend.company.domain.exception.CompanyDuplicateINNException;
+import fqw.crmprojectbackend.company.domain.exception.CompanyNotExistsException;
+import fqw.crmprojectbackend.company.domain.model.company.CompanyID;
+import fqw.crmprojectbackend.company.domain.model.company.CompanyINN;
+import fqw.crmprojectbackend.company.domain.model.company.CompanyLifecycleStatus;
+import fqw.crmprojectbackend.company.domain.model.company.CompanyLifecycleStatusType;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+public class CompanyUpdateService implements CompanyUpdateUseCase {
+    private final CompanyRepositoryPort companyRepositoryPort;
+
+    @Override
+    @Transactional
+    public  CompanyDTO update(UUID id, CompanyUpdateCommand command) {
+        var companyID = CompanyID.from(id);
+        var companyINN = new CompanyINN(command.inn());
+        var company = this.companyRepositoryPort.findByID(companyID);
+
+        if (company.isEmpty()) {
+            throw new CompanyNotExistsException(String.format(
+                    "Компании с идентификатором '%s' не существует",
+                    companyID.getValue()));
+        }
+
+        var sameInnCompany = this.companyRepositoryPort.findByINN(companyINN);
+        if (sameInnCompany.isPresent() && !sameInnCompany.get().getId().getValue().equals(id)) {
+            throw new CompanyDuplicateINNException(String.format(
+                    "Компания с ИНН '%s' уже существует",
+                    companyINN.value()));
+        }
+
+        var request = CompanyApplicationMapper.toRequest(command, company.get().getLifecycleStatus());
+        var updated = this.companyRepositoryPort.update(companyID, request);
+
+        return CompanyApplicationMapper.fromDomainModel(updated);
+    }
+}

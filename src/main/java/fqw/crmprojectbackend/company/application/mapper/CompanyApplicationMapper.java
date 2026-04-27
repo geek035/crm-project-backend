@@ -1,8 +1,10 @@
 package fqw.crmprojectbackend.company.application.mapper;
 
 import fqw.crmprojectbackend.common.dto.DirectoryEntryDTO;
+import fqw.crmprojectbackend.company.application.command.CompanyUpdateCommand;
 import fqw.crmprojectbackend.company.application.dto.CompanyDTO;
-import fqw.crmprojectbackend.company.domain.model.company.Company;
+import fqw.crmprojectbackend.company.application.request.CompanyUpdateRequest;
+import fqw.crmprojectbackend.company.domain.model.company.*;
 
 public class CompanyApplicationMapper {
     public static CompanyDTO fromDomainModel(Company company) {
@@ -21,5 +23,29 @@ public class CompanyApplicationMapper {
                         company.getLifecycleStatus().code().getDescription()
                 ),
                 RegisteredAddressApplicationMapper.fromDomainModel(company.getRegisteredAddress()));
+    }
+
+    public static Company toDomainModel(CompanyDTO dto) {
+        return new Company(
+                CompanyID.from(dto.id()),
+                new CompanyOfficialName(dto.officialName()),
+                new CompanyCommercialName(dto.commercialName()),
+                new CompanyINN(dto.inn()),
+                new CompanyKPP(dto.kpp()),
+                new CompanyClientSegment(CompanyClientSegmentCode.getByCode(dto.clientSegment().code())),
+                new CompanyLifecycleStatus(CompanyLifecycleStatusType.getByCode(dto.lifecycleStatus().code())),
+                RegisteredAddressApplicationMapper.toDomainModel(dto.registeredAddress())
+        );
+    }
+
+    public static CompanyUpdateRequest toRequest(CompanyUpdateCommand command, CompanyLifecycleStatus lifecycleStatus) {
+        return new CompanyUpdateRequest(
+                new CompanyOfficialName(command.officialName()),
+                new CompanyCommercialName(command.commercialName()),
+                new CompanyINN(command.inn()),
+                new CompanyKPP(command.kpp()),
+                new CompanyClientSegment(CompanyClientSegmentCode.getByCode(command.clientSegmentCode())),
+                lifecycleStatus,
+                RegisteredAddressApplicationMapper.toDomainModel(command.registeredAddress()));
     }
 }

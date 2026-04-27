@@ -15,6 +15,7 @@ public interface IndividualRepositoryPort {
     Optional<Individual> findByEmail(IndividualEmail email);
 
     boolean existByEmail(IndividualEmail email);
+    boolean existByID(IndividualID id);
 
     Optional<Individual> findById(IndividualID id);
 

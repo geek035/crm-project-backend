@@ -8,10 +8,9 @@ public record CompanyDTO(
         UUID id,
         String officialName,
         String commercialName,
-        String companyINN,
-        String companyKPP,
-        DirectoryEntryDTO companyClientSegment,
+        String inn,
+        String kpp,
+        DirectoryEntryDTO clientSegment,
         DirectoryEntryDTO lifecycleStatus,
-        RegisteredAddressDTO registeredAddress){
-
+        RegisteredAddressDTO registeredAddress) {
 }

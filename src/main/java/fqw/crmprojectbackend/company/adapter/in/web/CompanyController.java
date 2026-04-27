@@ -3,12 +3,12 @@ package fqw.crmprojectbackend.company.adapter.in.web;
 import fqw.crmprojectbackend.company.adapter.in.web.mapper.CompanyWebMapper;
 import fqw.crmprojectbackend.company.adapter.in.web.request.CompanyAddDTO;
 import fqw.crmprojectbackend.company.adapter.in.web.request.CompanyQueryDTO;
+import fqw.crmprojectbackend.company.adapter.in.web.request.CompanyUpdateDTO;
 import fqw.crmprojectbackend.company.application.dto.CompanyDTO;
 import fqw.crmprojectbackend.company.application.dto.CompanyPageDTO;
 import fqw.crmprojectbackend.company.application.port.in.CompanyAddUseCase;
 import fqw.crmprojectbackend.company.application.port.in.CompanyQueryUseCase;
-import fqw.crmprojectbackend.company.application.query.CompanyQueryParams;
-import fqw.crmprojectbackend.company.domain.model.company.CompanyID;
+import fqw.crmprojectbackend.company.application.port.in.CompanyUpdateUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +23,7 @@ import java.util.UUID;
 public class CompanyController {
     private final CompanyAddUseCase companyAddUseCase;
     private final CompanyQueryUseCase companyQueryUseCase;
+    private final CompanyUpdateUseCase companyUpdateUseCase;
 
     @PostMapping(path = "create")
     public ResponseEntity<UUID> addCompany(@RequestBody @Valid CompanyAddDTO body) {
@@ -46,5 +47,14 @@ public class CompanyController {
         var pageable = this.companyQueryUseCase.findByParams(params);
 
         return ResponseEntity.status(HttpStatus.OK).body(pageable);
+    }
+
+    @PutMapping(path = "{id}")
+    public ResponseEntity<CompanyDTO> updateCompany(
+            @PathVariable UUID id, @RequestBody @Valid CompanyUpdateDTO body) {
+        var command = CompanyWebMapper.toCommand(body);
+        var updated = this.companyUpdateUseCase.update(id, command);
+
+        return ResponseEntity.status(HttpStatus.OK).body(updated);
     }
 }
