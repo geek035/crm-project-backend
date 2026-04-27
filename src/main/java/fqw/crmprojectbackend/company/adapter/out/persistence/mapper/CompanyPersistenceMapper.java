@@ -4,7 +4,7 @@ import fqw.crmprojectbackend.company.adapter.out.persistence.entity.company.Comp
 import fqw.crmprojectbackend.company.adapter.out.persistence.entity.company.CompanyJPAEntity;
 import fqw.crmprojectbackend.company.adapter.out.persistence.entity.company.CompanyLifecycleStatusJPAEntity;
 import fqw.crmprojectbackend.company.adapter.out.persistence.entity.contact.CompanyContactJPAEntity;
-import fqw.crmprojectbackend.company.domain.model.company.Company;
+import fqw.crmprojectbackend.company.domain.model.company.*;
 
 import java.util.ArrayList;
 
@@ -37,5 +37,19 @@ public class CompanyPersistenceMapper {
         companyJPA.setContacts(contacts);
 
         return companyJPA;
+    }
+
+    public static Company toDomainModel(CompanyJPAEntity jpa) {
+        return new Company(
+                CompanyID.from(jpa.getId()),
+                new CompanyOfficialName(jpa.getOfficialName()),
+                new CompanyCommercialName(jpa.getCommercialName()),
+                new CompanyINN(jpa.getInn()),
+                new CompanyKPP(jpa.getKpp()),
+                new CompanyClientSegment(
+                        CompanyClientSegmentCode.getByCode(jpa.getClientSegment().getCode())),
+                new CompanyLifecycleStatus(
+                        CompanyLifecycleStatusType.getByCode(jpa.getLifecycleStatus().getCode())),
+                RegisteredAddressPersistenceMapper.toDomainModel(jpa.getRegisteredAddress()));
     }
 }

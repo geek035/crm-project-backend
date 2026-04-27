@@ -14,4 +14,15 @@ public class RegisteredAddressApplicationMapper {
                 new RegisteredAddressOffice(dto.office()),
                 new RegisteredAddressPostalCode(dto.postalCode()));
     }
+
+    public static RegisteredAddressDTO fromDomainModel(RegisteredAddress address) {
+        return new RegisteredAddressDTO(
+                address.getCountry().value(),
+                address.getRegion().value(),
+                address.getCity().value(),
+                address.getStreet().value(),
+                address.getBuilding().value(),
+                address.getOffice().value(),
+                address.getPostalCode().value());
+    }
 }

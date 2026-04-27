@@ -17,7 +17,6 @@ public class Company {
     private final CompanyClientSegment clientSegment;
     private final CompanyLifecycleStatus lifecycleStatus;
     private final RegisteredAddress registeredAddress;
-    private final List<CompanyContact> contacts;
 
     public Company(
             CompanyID id,
@@ -27,8 +26,7 @@ public class Company {
             CompanyKPP kpp,
             CompanyClientSegment clientSegment,
             CompanyLifecycleStatus lifecycleStatus,
-            RegisteredAddress registeredAddress,
-            List<CompanyContact> contacts) {
+            RegisteredAddress registeredAddress) {
 
         this.id = id;
         this.officialName = officialName;
@@ -38,7 +36,6 @@ public class Company {
         this.clientSegment = clientSegment;
         this.lifecycleStatus = lifecycleStatus;
         this.registeredAddress = registeredAddress;
-        this.contacts = contacts;
     }
 
     public static Company createNew(
@@ -56,8 +53,7 @@ public class Company {
                 kpp,
                 clientSegment,
                 new CompanyLifecycleStatus(CompanyLifecycleStatusType.ACTIVE),
-                registeredAddress,
-                new ArrayList<>());
+                registeredAddress);
 
     }
 }
