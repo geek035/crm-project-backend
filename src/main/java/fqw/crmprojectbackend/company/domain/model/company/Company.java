@@ -1,22 +1,22 @@
 package fqw.crmprojectbackend.company.domain.model.company;
 
+import fqw.crmprojectbackend.company.domain.exception.CompanyIllegalLifecycleChangeException;
+import fqw.crmprojectbackend.company.domain.exception.CompanyIllegalLifecycleStatusException;
 import fqw.crmprojectbackend.company.domain.model.adress.RegisteredAddress;
-import fqw.crmprojectbackend.company.domain.model.contact.CompanyContact;
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.function.Consumer;
 
 @Data
 public class Company {
-    private final CompanyID id;
-    private final CompanyOfficialName officialName;
-    private final CompanyCommercialName commercialName;
-    private final CompanyINN inn;
-    private final CompanyKPP kpp;
-    private final CompanyClientSegment clientSegment;
-    private final CompanyLifecycleStatus lifecycleStatus;
-    private final RegisteredAddress registeredAddress;
+    private CompanyID id;
+    private CompanyOfficialName officialName;
+    private CompanyCommercialName commercialName;
+    private CompanyINN inn;
+    private CompanyKPP kpp;
+    private CompanyClientSegment clientSegment;
+    private CompanyLifecycleStatus lifecycleStatus;
+    private RegisteredAddress registeredAddress;
 
     public Company(
             CompanyID id,
@@ -52,8 +52,50 @@ public class Company {
                 inn,
                 kpp,
                 clientSegment,
-                new CompanyLifecycleStatus(CompanyLifecycleStatusType.ACTIVE),
+                new CompanyLifecycleStatus(CompanyLifecycleStatusCode.PROSPECT),
                 registeredAddress);
 
+    }
+
+    public void changeLifecycle(CompanyLifecycleStatus lifecycleStatus) {
+        Consumer<CompanyLifecycleStatus> changeLifecycle =
+                it -> this.lifecycleStatus = it;
+
+        switch (lifecycleStatus.code()) {
+            case CompanyLifecycleStatusCode.PROSPECT -> {
+                throw new CompanyIllegalLifecycleChangeException(String.format(
+                        "Компании нельзя установить жизненный цикл '%s'",
+                        lifecycleStatus.code().getDescription()));
+            }
+
+            case CompanyLifecycleStatusCode.ACTIVE -> {
+                if (this.lifecycleStatus.code() == CompanyLifecycleStatusCode.ARCHIVED) {
+                    throw new CompanyIllegalLifecycleChangeException(String.format(
+                            "Из статуса '%s' для компании невозможно установить статус '%s'",
+                            CompanyLifecycleStatusCode.ARCHIVED.getDescription(),
+                            lifecycleStatus.code().getDescription()));
+                }
+
+                changeLifecycle.accept(lifecycleStatus);
+            }
+
+            case CompanyLifecycleStatusCode.ARCHIVED -> {
+                if (this.lifecycleStatus.code() == CompanyLifecycleStatusCode.ACTIVE) {
+                    throw new CompanyIllegalLifecycleChangeException(String.format(
+                            "Из статуса '%s' для компании невозможно установить статус '%s'",
+                            CompanyLifecycleStatusCode.ACTIVE.getDescription(),
+                            lifecycleStatus.code().getDescription()));
+                }
+
+                changeLifecycle.accept(lifecycleStatus);
+            }
+
+            case CompanyLifecycleStatusCode.INACTIVE -> {
+                changeLifecycle.accept(lifecycleStatus);
+            }
+
+            default -> throw  new CompanyIllegalLifecycleStatusException(
+                    String.format("Неизвестный жизненный цикл компании '%s'", lifecycleStatus.code()));
+        }
     }
 }

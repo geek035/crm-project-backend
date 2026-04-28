@@ -3,10 +3,7 @@ package fqw.crmprojectbackend.company.adapter.in.web.exception;
 import fqw.crmprojectbackend.common.web.exception.HTTPErrorCode;
 import fqw.crmprojectbackend.common.web.exception.WebError;
 import fqw.crmprojectbackend.company.adapter.in.web.CompanyController;
-import fqw.crmprojectbackend.company.domain.exception.CompanyDuplicateINNException;
-import fqw.crmprojectbackend.company.domain.exception.CompanyIllegalClientSegmentException;
-import fqw.crmprojectbackend.company.domain.exception.CompanyIllegalLifecycleStatusException;
-import fqw.crmprojectbackend.company.domain.exception.CompanyNotExistsException;
+import fqw.crmprojectbackend.company.domain.exception.*;
 import fqw.crmprojectbackend.individual.domain.exception.IndividualNotExistsException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -58,4 +55,17 @@ public class CompanyExceptionHandler {
 
         return ResponseEntity.status(HTTPErrorCode.RESOURCE_NOT_FOUND.getStatus()).body(error);
     }
+
+    @ExceptionHandler(CompanyIllegalLifecycleChangeException.class)
+    public ResponseEntity<WebError> handleCompanyIllegalLifecycleChangeException(
+            CompanyIllegalLifecycleChangeException exception) {
+        var error = new WebError(
+                HTTPErrorCode.UNPROCESSABLE_CONTENT.getStatus().value(),
+                HTTPErrorCode.UNPROCESSABLE_CONTENT.getTitle(),
+                List.of(exception.getMessage())
+        );
+
+        return ResponseEntity.status(HTTPErrorCode.UNPROCESSABLE_CONTENT.getStatus()).body(error);
+    }
+
 }

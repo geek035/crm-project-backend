@@ -4,6 +4,7 @@ import fqw.crmprojectbackend.company.adapter.in.web.mapper.CompanyWebMapper;
 import fqw.crmprojectbackend.company.adapter.in.web.request.CompanyAddDTO;
 import fqw.crmprojectbackend.company.adapter.in.web.request.CompanyQueryDTO;
 import fqw.crmprojectbackend.company.adapter.in.web.request.CompanyUpdateDTO;
+import fqw.crmprojectbackend.company.adapter.in.web.request.CompanyUpdateLifecycleDTO;
 import fqw.crmprojectbackend.company.application.dto.CompanyDTO;
 import fqw.crmprojectbackend.company.application.dto.CompanyPageDTO;
 import fqw.crmprojectbackend.company.application.port.in.CompanyAddUseCase;
@@ -54,6 +55,15 @@ public class CompanyController {
             @PathVariable UUID id, @RequestBody @Valid CompanyUpdateDTO body) {
         var command = CompanyWebMapper.toCommand(body);
         var updated = this.companyUpdateUseCase.update(id, command);
+
+        return ResponseEntity.status(HttpStatus.OK).body(updated);
+    }
+
+    @PostMapping(path = "{id}/lifecycle")
+    public ResponseEntity<CompanyDTO> updateLifecycle(
+            @PathVariable UUID id, @RequestBody @Valid CompanyUpdateLifecycleDTO body) {
+        var command = CompanyWebMapper.toCommand(body);
+        var updated = this.companyUpdateUseCase.updateLifecycle(id, command);
 
         return ResponseEntity.status(HttpStatus.OK).body(updated);
     }

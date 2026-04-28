@@ -1,13 +1,12 @@
 package fqw.crmprojectbackend.company.domain.model.company;
 
-import fqw.crmprojectbackend.company.domain.exception.CompanyIllegalClientSegmentException;
 import fqw.crmprojectbackend.company.domain.exception.CompanyIllegalLifecycleStatusException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum CompanyLifecycleStatusType {
+public enum CompanyLifecycleStatusCode {
     PROSPECT("Потенциальный"),
     ACTIVE("Активный"),
     INACTIVE("Неактивный"),
@@ -15,12 +14,12 @@ public enum CompanyLifecycleStatusType {
 
     private final String description;
 
-    public static CompanyLifecycleStatusType getByCode(String code) {
+    public static CompanyLifecycleStatusCode getByCode(String code) {
         return switch (code) {
-            case "PROSPECT" -> CompanyLifecycleStatusType.PROSPECT;
-            case "ACTIVE" -> CompanyLifecycleStatusType.ACTIVE;
-            case "INACTIVE" -> CompanyLifecycleStatusType.INACTIVE;
-            case "ARCHIVED" -> CompanyLifecycleStatusType.ARCHIVED;
+            case "PROSPECT" -> CompanyLifecycleStatusCode.PROSPECT;
+            case "ACTIVE" -> CompanyLifecycleStatusCode.ACTIVE;
+            case "INACTIVE" -> CompanyLifecycleStatusCode.INACTIVE;
+            case "ARCHIVED" -> CompanyLifecycleStatusCode.ARCHIVED;
             default ->  throw new CompanyIllegalLifecycleStatusException(
                     String.format("Неизвестный жизненный цикл компании '%s'", code));
         };

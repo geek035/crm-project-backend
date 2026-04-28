@@ -1,6 +1,7 @@
 package fqw.crmprojectbackend.company.application.service;
 
 import fqw.crmprojectbackend.company.application.command.CompanyUpdateCommand;
+import fqw.crmprojectbackend.company.application.command.CompanyUpdateLifecycleCommand;
 import fqw.crmprojectbackend.company.application.dto.CompanyDTO;
 import fqw.crmprojectbackend.company.application.mapper.CompanyApplicationMapper;
 import fqw.crmprojectbackend.company.application.port.in.CompanyUpdateUseCase;
@@ -10,7 +11,7 @@ import fqw.crmprojectbackend.company.domain.exception.CompanyNotExistsException;
 import fqw.crmprojectbackend.company.domain.model.company.CompanyID;
 import fqw.crmprojectbackend.company.domain.model.company.CompanyINN;
 import fqw.crmprojectbackend.company.domain.model.company.CompanyLifecycleStatus;
-import fqw.crmprojectbackend.company.domain.model.company.CompanyLifecycleStatusType;
+import fqw.crmprojectbackend.company.domain.model.company.CompanyLifecycleStatusCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class CompanyUpdateService implements CompanyUpdateUseCase {
         if (company.isEmpty()) {
             throw new CompanyNotExistsException(String.format(
                     "Компании с идентификатором '%s' не существует",
-                    companyID.getValue()));
+                    id));
         }
 
         var sameInnCompany = this.companyRepositoryPort.findByINN(companyINN);
@@ -44,6 +45,29 @@ public class CompanyUpdateService implements CompanyUpdateUseCase {
 
         var request = CompanyApplicationMapper.toRequest(command, company.get().getLifecycleStatus());
         var updated = this.companyRepositoryPort.update(companyID, request);
+
+        return CompanyApplicationMapper.fromDomainModel(updated);
+    }
+
+    @Override
+    @Transactional
+    public CompanyDTO updateLifecycle(UUID id, CompanyUpdateLifecycleCommand command) {
+        var companyOptional = this.companyRepositoryPort.findByID(CompanyID.from(id));
+
+        if (companyOptional.isEmpty()) {
+            throw new CompanyNotExistsException(String.format(
+                    "Компании с идентификатором '%s' не существует",
+                    id));
+        }
+
+        var company = companyOptional.get();
+        var lifecycleStatus = new CompanyLifecycleStatus(
+                CompanyLifecycleStatusCode.getByCode(command.lifecycleCode()));
+
+        company.changeLifecycle(lifecycleStatus);
+
+        var request = CompanyApplicationMapper.toRequest(company);
+        var updated = this.companyRepositoryPort.update(company.getId(), request);
 
         return CompanyApplicationMapper.fromDomainModel(updated);
     }

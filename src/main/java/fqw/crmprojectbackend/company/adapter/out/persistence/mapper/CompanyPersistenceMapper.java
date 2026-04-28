@@ -49,7 +49,7 @@ public class CompanyPersistenceMapper {
                 new CompanyClientSegment(
                         CompanyClientSegmentCode.getByCode(jpa.getClientSegment().getCode())),
                 new CompanyLifecycleStatus(
-                        CompanyLifecycleStatusType.getByCode(jpa.getLifecycleStatus().getCode())),
+                        CompanyLifecycleStatusCode.getByCode(jpa.getLifecycleStatus().getCode())),
                 RegisteredAddressPersistenceMapper.toDomainModel(jpa.getRegisteredAddress()));
     }
 }

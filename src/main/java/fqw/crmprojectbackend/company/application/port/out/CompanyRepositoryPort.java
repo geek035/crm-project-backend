@@ -1,6 +1,5 @@
 package fqw.crmprojectbackend.company.application.port.out;
 
-import fqw.crmprojectbackend.company.application.command.CompanyUpdateCommand;
 import fqw.crmprojectbackend.company.application.query.CompanyQueryParams;
 import fqw.crmprojectbackend.company.application.request.CompanyUpdateRequest;
 import fqw.crmprojectbackend.company.domain.model.company.Company;
@@ -9,7 +8,6 @@ import fqw.crmprojectbackend.company.domain.model.company.CompanyINN;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface CompanyRepositoryPort {
     boolean existByINN(CompanyINN inn);
