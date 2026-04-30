@@ -4,7 +4,7 @@ import fqw.crmprojectbackend.company.application.command.CompanyAddCommand;
 import fqw.crmprojectbackend.company.application.mapper.RegisteredAddressApplicationMapper;
 import fqw.crmprojectbackend.company.application.port.in.CompanyAddUseCase;
 import fqw.crmprojectbackend.company.application.port.out.CompanyRepositoryPort;
-import fqw.crmprojectbackend.company.domain.exception.CompanyDuplicateINNException;
+import fqw.crmprojectbackend.company.domain.exception.company.CompanyDuplicateINNException;
 import fqw.crmprojectbackend.company.domain.model.company.*;
 import fqw.crmprojectbackend.company.domain.model.company.CompanyClientSegment;
 import fqw.crmprojectbackend.company.domain.model.company.CompanyClientSegmentCode;

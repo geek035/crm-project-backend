@@ -32,10 +32,16 @@ public class CompanyContactJPAEntity {
     private CompanyJPAEntity company;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "company_conctact_role_id", nullable = false)
+    @JoinColumn(
+            name = "company_conctact_role_code",
+            referencedColumnName = "code",
+            nullable = false)
     private CompanyContactRoleJPAEntity role;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "company_contact_status_id", nullable = false)
+    @JoinColumn(
+            name = "company_contact_status_code",
+            referencedColumnName = "code",
+            nullable = false)
     private CompanyContactStatusJPAEntity status;
 }

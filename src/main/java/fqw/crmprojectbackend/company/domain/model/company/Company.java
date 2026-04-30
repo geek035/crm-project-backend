@@ -1,8 +1,11 @@
 package fqw.crmprojectbackend.company.domain.model.company;
 
-import fqw.crmprojectbackend.company.domain.exception.CompanyIllegalLifecycleChangeException;
-import fqw.crmprojectbackend.company.domain.exception.CompanyIllegalLifecycleStatusException;
+import fqw.crmprojectbackend.company.domain.exception.company.CompanyIllegalLifecycleChangeException;
+import fqw.crmprojectbackend.company.domain.exception.company.CompanyIllegalLifecycleStatusException;
 import fqw.crmprojectbackend.company.domain.model.adress.RegisteredAddress;
+import fqw.crmprojectbackend.company.domain.model.contact.CompanyContact;
+import fqw.crmprojectbackend.company.domain.model.contact.CompanyContactRole;
+import fqw.crmprojectbackend.company.domain.model.contact.individual.IndividualContact;
 import lombok.Data;
 
 import java.util.function.Consumer;
@@ -55,6 +58,12 @@ public class Company {
                 new CompanyLifecycleStatus(CompanyLifecycleStatusCode.PROSPECT),
                 registeredAddress);
 
+    }
+
+    public CompanyContact addContact(
+            IndividualContact individualContact,
+            CompanyContactRole contactRole) {
+        return CompanyContact.createNew(individualContact, contactRole);
     }
 
     public void changeLifecycle(CompanyLifecycleStatus lifecycleStatus) {

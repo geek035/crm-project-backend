@@ -1,4 +1,4 @@
-package fqw.crmprojectbackend.company.adapter.in.web.request;
+package fqw.crmprojectbackend.company.adapter.in.web.request.company;
 
 import jakarta.validation.constraints.NotNull;
 

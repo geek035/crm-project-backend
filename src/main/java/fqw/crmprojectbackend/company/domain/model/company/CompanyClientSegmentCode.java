@@ -1,6 +1,6 @@
 package fqw.crmprojectbackend.company.domain.model.company;
 
-import fqw.crmprojectbackend.company.domain.exception.CompanyIllegalClientSegmentException;
+import fqw.crmprojectbackend.company.domain.exception.company.CompanyIllegalClientSegmentException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -18,7 +18,7 @@ public enum CompanyClientSegmentCode {
     public static CompanyClientSegmentCode getByCode(String code) {
         return switch (code) {
             case "MICRO" -> CompanyClientSegmentCode.MICRO;
-            case "SMALL_BUSINESS" -> CompanyClientSegmentCode.SMALL_BUSINESS;
+            case "SMALL_BUSINESS\"e1431258-9909-43c3-88ad-d2d7eb62a17b\"" -> CompanyClientSegmentCode.SMALL_BUSINESS;
             case "MEDIUM_BUSINESS" -> CompanyClientSegmentCode.MEDIUM_BUSINESS;
             case "PARTNER" -> CompanyClientSegmentCode.PARTNER;
             default ->  throw new CompanyIllegalClientSegmentException(

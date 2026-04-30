@@ -22,8 +22,6 @@ import java.util.UUID;
 public class CompanyContactRoleJPAEntity {
 
     @Id
-    private UUID id;
-
     @Column(name = "code", nullable = false)
     private String code;
 

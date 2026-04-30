@@ -1,6 +1,6 @@
 package fqw.crmprojectbackend.company.domain.model.company;
 
-import fqw.crmprojectbackend.company.domain.exception.CompanyIllegalLifecycleStatusException;
+import fqw.crmprojectbackend.company.domain.exception.company.CompanyIllegalLifecycleStatusException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

@@ -1,10 +1,10 @@
 package fqw.crmprojectbackend.company.adapter.in.web;
 
 import fqw.crmprojectbackend.company.adapter.in.web.mapper.CompanyWebMapper;
-import fqw.crmprojectbackend.company.adapter.in.web.request.CompanyAddDTO;
-import fqw.crmprojectbackend.company.adapter.in.web.request.CompanyQueryDTO;
-import fqw.crmprojectbackend.company.adapter.in.web.request.CompanyUpdateDTO;
-import fqw.crmprojectbackend.company.adapter.in.web.request.CompanyUpdateLifecycleDTO;
+import fqw.crmprojectbackend.company.adapter.in.web.request.company.CompanyAddDTO;
+import fqw.crmprojectbackend.company.adapter.in.web.request.company.CompanyQueryDTO;
+import fqw.crmprojectbackend.company.adapter.in.web.request.company.CompanyUpdateDTO;
+import fqw.crmprojectbackend.company.adapter.in.web.request.company.CompanyUpdateLifecycleDTO;
 import fqw.crmprojectbackend.company.application.dto.CompanyDTO;
 import fqw.crmprojectbackend.company.application.dto.CompanyPageDTO;
 import fqw.crmprojectbackend.company.application.port.in.CompanyAddUseCase;

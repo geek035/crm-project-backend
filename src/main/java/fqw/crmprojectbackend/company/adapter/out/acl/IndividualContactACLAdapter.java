@@ -16,7 +16,8 @@ public class IndividualContactACLAdapter implements IndividualContactGateway {
 
     @Override
     public Optional<IndividualContact> getByID(IndividualContactID id) {
-        var individual = individualQueryUseCase.findById(new IndividualByIDQuery(id.getValue()));
+        var query = new IndividualByIDQuery(id.getValue());
+        var individual = individualQueryUseCase.findById(query);
 
         return individual.map(it -> new IndividualContact(
                 IndividualContactID.from(it.id()),

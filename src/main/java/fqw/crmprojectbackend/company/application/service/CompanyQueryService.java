@@ -6,7 +6,7 @@ import fqw.crmprojectbackend.company.application.mapper.CompanyApplicationMapper
 import fqw.crmprojectbackend.company.application.port.in.CompanyQueryUseCase;
 import fqw.crmprojectbackend.company.application.port.out.CompanyRepositoryPort;
 import fqw.crmprojectbackend.company.application.query.CompanyQueryParams;
-import fqw.crmprojectbackend.company.domain.exception.CompanyNotExistsException;
+import fqw.crmprojectbackend.company.domain.exception.company.CompanyNotExistsException;
 import fqw.crmprojectbackend.company.domain.model.company.CompanyID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

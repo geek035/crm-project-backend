@@ -2,16 +2,14 @@ package fqw.crmprojectbackend.company.adapter.in.web.mapper;
 
 import fqw.crmprojectbackend.common.query.criterion.filter.FilterCriterion;
 import fqw.crmprojectbackend.common.query.criterion.filter.FilterCriterionMatchMode;
-import fqw.crmprojectbackend.company.adapter.in.web.request.CompanyAddDTO;
-import fqw.crmprojectbackend.company.adapter.in.web.request.CompanyQueryDTO;
-import fqw.crmprojectbackend.company.adapter.in.web.request.CompanyUpdateDTO;
-import fqw.crmprojectbackend.company.adapter.in.web.request.CompanyUpdateLifecycleDTO;
+import fqw.crmprojectbackend.company.adapter.in.web.request.company.CompanyAddDTO;
+import fqw.crmprojectbackend.company.adapter.in.web.request.company.CompanyQueryDTO;
+import fqw.crmprojectbackend.company.adapter.in.web.request.company.CompanyUpdateDTO;
+import fqw.crmprojectbackend.company.adapter.in.web.request.company.CompanyUpdateLifecycleDTO;
 import fqw.crmprojectbackend.company.application.command.CompanyAddCommand;
 import fqw.crmprojectbackend.company.application.command.CompanyUpdateCommand;
 import fqw.crmprojectbackend.company.application.command.CompanyUpdateLifecycleCommand;
 import fqw.crmprojectbackend.company.application.query.CompanyQueryParams;
-
-import java.util.UUID;
 
 public class CompanyWebMapper {
     public static CompanyAddCommand toCommand(CompanyAddDTO dto) {

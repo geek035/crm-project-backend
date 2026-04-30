@@ -1,9 +1,9 @@
-package fqw.crmprojectbackend.company.adapter.in.web.request;
+package fqw.crmprojectbackend.company.adapter.in.web.request.company;
 
 import fqw.crmprojectbackend.company.application.dto.RegisteredAddressDTO;
 import jakarta.validation.constraints.NotNull;
 
-public record CompanyAddDTO(
+public record CompanyUpdateDTO(
         @NotNull(message = "Официальное название компании должно быть инициализировано")
         String officialName,
         @NotNull(message = "Коммерческое название компании должно быть инициализировано")
@@ -15,6 +15,5 @@ public record CompanyAddDTO(
         @NotNull(message = "Сегмент дейтельности компании должен быть указан")
         String clientSegmentCode,
         @NotNull(message = "Адрес регистрации должен быть указан")
-        RegisteredAddressDTO registeredAddress
-) {
+        RegisteredAddressDTO registeredAddress) {
 }

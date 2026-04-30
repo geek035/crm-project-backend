@@ -7,8 +7,11 @@ import fqw.crmprojectbackend.company.adapter.out.persistence.entity.company.Comp
 import fqw.crmprojectbackend.company.adapter.out.persistence.entity.company.CompanyLifecycleStatusJPAEntity;
 import fqw.crmprojectbackend.company.adapter.out.persistence.mapper.CompanyPersistenceMapper;
 import fqw.crmprojectbackend.company.adapter.out.persistence.mapper.RegisteredAddressPersistenceMapper;
+import fqw.crmprojectbackend.company.adapter.out.persistence.repository.contact.CompanyContactSpringDataRepository;
+import fqw.crmprojectbackend.company.application.dto.CompanyContactDTO;
 import fqw.crmprojectbackend.company.application.port.out.CompanyRepositoryPort;
 import fqw.crmprojectbackend.company.application.query.CompanyQueryParams;
+import fqw.crmprojectbackend.company.application.request.CompanyContactAddRequest;
 import fqw.crmprojectbackend.company.application.request.CompanyUpdateRequest;
 import fqw.crmprojectbackend.company.domain.model.company.Company;
 import fqw.crmprojectbackend.company.domain.model.company.CompanyID;
@@ -19,6 +22,7 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -49,6 +53,11 @@ public class CompanyRepositoryAdapter implements CompanyRepositoryPort {
     }
 
     @Override
+    @EntityGraph(attributePaths = {
+            "clientSegment",
+            "lifecycleStatus",
+            "registeredAddress"
+    })
     public Optional<Company> findByID(CompanyID id) {
         return this.companySpringDataRepository
                 .findById(id.getValue())
@@ -63,6 +72,11 @@ public class CompanyRepositoryAdapter implements CompanyRepositoryPort {
     }
 
     @Override
+    @EntityGraph(attributePaths = {
+            "clientSegment",
+            "lifecycleStatus",
+            "registeredAddress"
+    })
     public List<Company> findByParams(CompanyQueryParams query) {
         Specification<CompanyJPAEntity> specification =
                 new FilterSpecificationBuilder<CompanyJPAEntity>()
