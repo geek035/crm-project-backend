@@ -1,4 +1,4 @@
-package fqw.crmprojectbackend.company.application.service;
+package fqw.crmprojectbackend.company.application.service.contact;
 
 import fqw.crmprojectbackend.company.application.command.CompanyContactUpdateRoleCommand;
 import fqw.crmprojectbackend.company.application.dto.CompanyContactDTO;
@@ -6,7 +6,6 @@ import fqw.crmprojectbackend.company.application.mapper.CompanyContactApplicatio
 import fqw.crmprojectbackend.company.application.port.in.CompanyContactUpdateUseCase;
 import fqw.crmprojectbackend.company.application.port.out.CompanyContactRepositoryPort;
 import fqw.crmprojectbackend.company.application.port.out.IndividualContactGateway;
-import fqw.crmprojectbackend.company.application.request.CompanyContactUpdateRequest;
 import fqw.crmprojectbackend.company.domain.exception.contact.CompanyContactNotExistsException;
 import fqw.crmprojectbackend.company.domain.exception.contact.IndividualContactNotFoundException;
 import fqw.crmprojectbackend.company.domain.model.contact.CompanyContactRoleCode;

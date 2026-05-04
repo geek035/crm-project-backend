@@ -1,4 +1,4 @@
-package fqw.crmprojectbackend.company.application.service;
+package fqw.crmprojectbackend.company.application.service.company;
 
 import fqw.crmprojectbackend.company.application.command.CompanyUpdateCommand;
 import fqw.crmprojectbackend.company.application.command.CompanyUpdateLifecycleCommand;

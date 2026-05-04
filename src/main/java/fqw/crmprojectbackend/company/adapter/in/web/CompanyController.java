@@ -26,6 +26,7 @@ public class CompanyController {
     private final CompanyQueryUseCase companyQueryUseCase;
     private final CompanyUpdateUseCase companyUpdateUseCase;
 
+
     @PostMapping(path = "create")
     public ResponseEntity<UUID> addCompany(@RequestBody @Valid CompanyAddDTO body) {
         var command = CompanyWebMapper.toCommand(body);

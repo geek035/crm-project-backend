@@ -1,4 +1,4 @@
-package fqw.crmprojectbackend.company.application.service;
+package fqw.crmprojectbackend.company.application.service.contact;
 
 import fqw.crmprojectbackend.company.application.command.CompanyContactAddCommand;
 import fqw.crmprojectbackend.company.application.mapper.CompanyContactApplicationMapper;

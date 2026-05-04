@@ -14,6 +14,9 @@ public interface CompanyContactRepositoryPort {
 
     CompanyContactDTO updateByOrigin(CompanyContactDTO origin);
 
+    void delete(UUID id);
+
+    boolean existsByID(UUID id);
     boolean existByIndividualID(UUID individualID);
 
     long getTotal();

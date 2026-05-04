@@ -1,4 +1,4 @@
-package fqw.crmprojectbackend.company.application.service;
+package fqw.crmprojectbackend.company.application.service.contact;
 
 import fqw.crmprojectbackend.common.query.BaseQueryParams;
 import fqw.crmprojectbackend.company.application.dto.CompanyContactDTO;

@@ -8,6 +8,7 @@ import fqw.crmprojectbackend.company.adapter.in.web.request.contact.CompanyConta
 import fqw.crmprojectbackend.company.application.dto.CompanyContactDTO;
 import fqw.crmprojectbackend.company.application.dto.CompanyContactPageDTO;
 import fqw.crmprojectbackend.company.application.port.in.CompanyContactAddUseCase;
+import fqw.crmprojectbackend.company.application.port.in.CompanyContactDeleteUseCase;
 import fqw.crmprojectbackend.company.application.port.in.CompanyContactQueryUseCase;
 import fqw.crmprojectbackend.company.application.port.in.CompanyContactUpdateUseCase;
 import jakarta.validation.Valid;
@@ -25,6 +26,8 @@ public class CompanyContactController {
     private final CompanyContactAddUseCase contactAddUseCase;
     private final CompanyContactQueryUseCase contactQueryUseCase;
     private final CompanyContactUpdateUseCase contactUpdateUseCase;
+    private final CompanyContactDeleteUseCase contactDeleteUseCase;
+
 
     @PostMapping()
     public ResponseEntity<UUID> addContact(
@@ -34,6 +37,13 @@ public class CompanyContactController {
         var contactID = this.contactAddUseCase.addContact(companyID, command);
 
         return ResponseEntity.status(HttpStatus.OK).body(contactID);
+    }
+
+    @DeleteMapping(path = "{id}")
+    public ResponseEntity<Void> deleteContact(@PathVariable @Valid UUID id) {
+        this.contactDeleteUseCase.delete(id);
+
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping(path = "query")

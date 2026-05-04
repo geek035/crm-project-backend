@@ -15,6 +15,7 @@ public interface CompanyContactSpringDataRepository extends
         JpaRepository<CompanyContactJPAEntity, UUID>,
         JpaSpecificationExecutor<CompanyContactJPAEntity> {
 
+    boolean existsById(UUID id);
     boolean existsByIndividualID(UUID individualID);
 
     @Override

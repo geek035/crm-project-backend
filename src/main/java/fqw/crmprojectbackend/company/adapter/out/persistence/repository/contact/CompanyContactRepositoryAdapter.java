@@ -35,6 +35,11 @@ public class CompanyContactRepositoryAdapter implements CompanyContactRepository
     private final CompanyContactStatusSpringDataRepository statusSpringDataRepository;
 
     @Override
+    public boolean existsByID(UUID id) {
+        return this.contactSpringDataRepository.existsById(id);
+    }
+
+    @Override
     public boolean existByIndividualID(UUID individualID) {
         return this.contactSpringDataRepository.existsByIndividualID(individualID);
     }
@@ -154,5 +159,16 @@ public class CompanyContactRepositoryAdapter implements CompanyContactRepository
         var updated = this.contactSpringDataRepository.save(contact);
 
         return CompanyContactPersistentMapper.fromEntity(updated, individual);
+    }
+
+    @Override
+    public void delete(UUID id) {
+        var contact = this.contactSpringDataRepository
+                .findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(String.format(
+                        "Контакт с идентификатором '%s' не найден",
+                        id)));
+
+        this.contactSpringDataRepository.delete(contact);
     }
 }
