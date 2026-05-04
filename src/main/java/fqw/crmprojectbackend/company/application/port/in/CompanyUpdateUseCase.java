@@ -10,4 +10,5 @@ public interface CompanyUpdateUseCase {
     CompanyDTO update(UUID id, CompanyUpdateCommand command);
 
     CompanyDTO updateLifecycle(UUID id, CompanyUpdateLifecycleCommand command);
+
 }

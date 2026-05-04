@@ -99,7 +99,7 @@ public class Company {
     }
 
     public void changeLifecycle(CompanyLifecycleStatus lifecycleStatus) {
-        Consumer<CompanyLifecycleStatus> changeLifecycle =
+        Consumer<CompanyLifecycleStatus> lifecycleChanger =
                 it -> this.lifecycleStatus = it;
 
         switch (lifecycleStatus.code()) {
@@ -117,7 +117,7 @@ public class Company {
                             lifecycleStatus.code().getDescription()));
                 }
 
-                changeLifecycle.accept(lifecycleStatus);
+                lifecycleChanger.accept(lifecycleStatus);
             }
 
             case CompanyLifecycleStatusCode.ARCHIVED -> {
@@ -128,11 +128,11 @@ public class Company {
                             lifecycleStatus.code().getDescription()));
                 }
 
-                changeLifecycle.accept(lifecycleStatus);
+                lifecycleChanger.accept(lifecycleStatus);
             }
 
             case CompanyLifecycleStatusCode.INACTIVE -> {
-                changeLifecycle.accept(lifecycleStatus);
+                lifecycleChanger.accept(lifecycleStatus);
             }
 
             default -> throw  new CompanyIllegalLifecycleStatusException(
