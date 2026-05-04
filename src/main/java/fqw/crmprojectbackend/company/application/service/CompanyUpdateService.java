@@ -25,28 +25,31 @@ public class CompanyUpdateService implements CompanyUpdateUseCase {
 
     @Override
     @Transactional
-    public  CompanyDTO update(UUID id, CompanyUpdateCommand command) {
+    public CompanyDTO update(UUID id, CompanyUpdateCommand command) {
         var companyID = CompanyID.from(id);
         var companyINN = new CompanyINN(command.inn());
-        var company = this.companyRepositoryPort.findByID(companyID);
-
-        if (company.isEmpty()) {
-            throw new CompanyNotExistsException(String.format(
-                    "Компании с идентификатором '%s' не существует",
-                    id));
-        }
+        var company = this.companyRepositoryPort
+                .findByID(companyID)
+                .orElseThrow(() -> new CompanyNotExistsException(String.format(
+                        "Компании с идентификатором '%s' не существует",
+                        id)));
 
         var sameInnCompany = this.companyRepositoryPort.findByINN(companyINN);
         if (sameInnCompany.isPresent() && !sameInnCompany.get().getId().getValue().equals(id)) {
             throw new CompanyDuplicateINNException(String.format(
-                    "Компания с ИНН '%s' уже существует",
+                    "Компании с ИНН '%s' уже существует",
                     companyINN.value()));
         }
 
-        var request = CompanyApplicationMapper.toRequest(command, company.get().getLifecycleStatus());
-        var updated = this.companyRepositoryPort.update(companyID, request);
+        company.setOfficialName(command.officialName());
+        company.setCommercialName(command.commercialName());
+        company.setINN(command.inn());
+        company.setKPP(command.kpp());
+        company.changeClientSegment(command.clientSegmentCode());
+        company.updateRegisteredAddress(command.registeredAddress());
 
-        return CompanyApplicationMapper.fromDomainModel(updated);
+        return this.companyRepositoryPort
+                .updateByOrigin(CompanyApplicationMapper.fromDomainModel(company));
     }
 
     @Override
@@ -66,9 +69,7 @@ public class CompanyUpdateService implements CompanyUpdateUseCase {
 
         company.changeLifecycle(lifecycleStatus);
 
-        var request = CompanyApplicationMapper.toRequest(company);
-        var updated = this.companyRepositoryPort.update(company.getId(), request);
-
-        return CompanyApplicationMapper.fromDomainModel(updated);
+        return this.companyRepositoryPort
+                .updateByOrigin(CompanyApplicationMapper.fromDomainModel(company));
     }
 }

@@ -11,7 +11,10 @@ import fqw.crmprojectbackend.individual.domain.model.IndividualID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -35,5 +38,10 @@ public class IndividualQueryService implements IndividualQueryUseCase {
         var total = this.individualRepositoryPort.getTotal();
 
         return new IndividualPageDTO(total, data);
+    }
+
+    @Override
+    public List<IndividualDTO> findByIDs(Collection<UUID> ids) {
+        return this.individualRepositoryPort.findByIDs(ids);
     }
 }

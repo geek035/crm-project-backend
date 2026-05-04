@@ -1,6 +1,7 @@
 package fqw.crmprojectbackend.company.adapter.out.persistence.entity.address;
 
 import fqw.crmprojectbackend.company.adapter.out.persistence.entity.company.CompanyJPAEntity;
+import fqw.crmprojectbackend.company.application.dto.RegisteredAddressDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -49,4 +50,14 @@ public class RegisteredAddressJPAEntity {
     @MapsId
     @JoinColumn(name = "id")
     private CompanyJPAEntity company;
+
+    public void updateByOrigin(RegisteredAddressDTO origin) {
+        this.setCountry(origin.country());
+        this.setRegion(origin.region());
+        this.setCity(origin.city());
+        this.setStreet(origin.street());
+        this.setBuilding(origin.building());
+        this.setOffice(origin.office());
+        this.setPostalCode(origin.postalCode());
+    }
 }

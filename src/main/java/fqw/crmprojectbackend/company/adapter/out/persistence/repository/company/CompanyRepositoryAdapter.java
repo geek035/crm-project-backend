@@ -9,6 +9,8 @@ import fqw.crmprojectbackend.company.adapter.out.persistence.mapper.CompanyPersi
 import fqw.crmprojectbackend.company.adapter.out.persistence.mapper.RegisteredAddressPersistenceMapper;
 import fqw.crmprojectbackend.company.adapter.out.persistence.repository.contact.CompanyContactSpringDataRepository;
 import fqw.crmprojectbackend.company.application.dto.CompanyContactDTO;
+import fqw.crmprojectbackend.company.application.dto.CompanyDTO;
+import fqw.crmprojectbackend.company.application.dto.RegisteredAddressDTO;
 import fqw.crmprojectbackend.company.application.port.out.CompanyRepositoryPort;
 import fqw.crmprojectbackend.company.application.query.CompanyQueryParams;
 import fqw.crmprojectbackend.company.application.request.CompanyContactAddRequest;
@@ -22,7 +24,6 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -33,6 +34,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CompanyRepositoryAdapter implements CompanyRepositoryPort {
     private final CompanySpringDataRepository companySpringDataRepository;
+    private final CompanyClientSegmentSpringDataRepository clientSegmentSpringDataRepository;
+    private final CompanyLifecycleStatusSpringDataRepository lifecycleStatusSpringDataRepository;
 
     @Override
     public boolean existByINN(CompanyINN inn) {
@@ -53,11 +56,6 @@ public class CompanyRepositoryAdapter implements CompanyRepositoryPort {
     }
 
     @Override
-    @EntityGraph(attributePaths = {
-            "clientSegment",
-            "lifecycleStatus",
-            "registeredAddress"
-    })
     public Optional<Company> findByID(CompanyID id) {
         return this.companySpringDataRepository
                 .findById(id.getValue())
@@ -72,11 +70,6 @@ public class CompanyRepositoryAdapter implements CompanyRepositoryPort {
     }
 
     @Override
-    @EntityGraph(attributePaths = {
-            "clientSegment",
-            "lifecycleStatus",
-            "registeredAddress"
-    })
     public List<Company> findByParams(CompanyQueryParams query) {
         Specification<CompanyJPAEntity> specification =
                 new FilterSpecificationBuilder<CompanyJPAEntity>()
@@ -91,7 +84,6 @@ public class CompanyRepositoryAdapter implements CompanyRepositoryPort {
 
         var sort = Sort.by(orders);
         var pageRequest = PageRequest.of(query.pageNumber(), query.pageSize(), sort);
-
         var list = this.companySpringDataRepository.findAll(specification, pageRequest);
 
         return list.stream()
@@ -105,33 +97,43 @@ public class CompanyRepositoryAdapter implements CompanyRepositoryPort {
     }
 
     @Override
-    public  Company update(CompanyID id, CompanyUpdateRequest request) {
-        var companyJPAOptional = this.companySpringDataRepository.findById(id.getValue());
+    public CompanyDTO updateByOrigin(CompanyDTO origin) {
+        var companyJPA = this.companySpringDataRepository
+                .findById(origin.id())
+                .orElseThrow(() -> new EntityNotFoundException(String.format(
+                        "Не найдено компании с идентификатором '%s'",
+                        origin.id())));
 
-        if (companyJPAOptional.isEmpty()) {
-            throw new EntityNotFoundException();
-        }
+        companyJPA.setOfficialName(origin.officialName());
+        companyJPA.setCommercialName(origin.commercialName());
+        companyJPA.setInn(origin.inn());
+        companyJPA.setKpp(origin.kpp());
 
-        var companyJPA = companyJPAOptional.get();
-        companyJPA.setOfficialName(request.officialName().value());
-        companyJPA.setCommercialName(request.commercialName().value());
-        companyJPA.setInn(request.inn().value());
-        companyJPA.setKpp(request.kpp().value());
+        var clientSegmentCode = origin.clientSegment().code();
+        var clientSegmentJPA = this.clientSegmentSpringDataRepository
+                .findByCode(clientSegmentCode)
+                .orElseThrow(() -> new EntityNotFoundException(String.format(
+                        "Не найден сегмент клиента с кодом '%s'",
+                        clientSegmentCode)));
 
-        var clientSegmentCode = String.valueOf(request.clientSegment().code());
-        var clientSegmentJPA = new CompanyClientSegmentJPAEntity();
-        clientSegmentJPA.setCode(clientSegmentCode);
         companyJPA.setClientSegment(clientSegmentJPA);
 
-        var lifeCycleCode = String.valueOf(request.lifecycleStatus().code());
-        var lifecycleJPA = new CompanyLifecycleStatusJPAEntity();
-        lifecycleJPA.setCode(lifeCycleCode);
+        var lifecycleCode = origin.lifecycleStatus().code();
+        var lifecycleJPA = this.lifecycleStatusSpringDataRepository
+                .findByCode(lifecycleCode)
+                .orElseThrow(() -> new EntityNotFoundException(String.format(
+                        "Не найден статус жизненного цикла компании с кодом '%s'",
+                        lifecycleCode)));
+
         companyJPA.setLifecycleStatus(lifecycleJPA);
 
-        var registeredAddressJPA = updateRegisteredAddressJPAEntity(request, companyJPA);
+        var registeredAddressJPA = companyJPA.getRegisteredAddress();
+        registeredAddressJPA.updateByOrigin(origin.registeredAddress());
         companyJPA.setRegisteredAddress(registeredAddressJPA);
 
-        return CompanyPersistenceMapper.toDomainModel(companyJPA);
+        var updated = this.companySpringDataRepository.save(companyJPA);
+
+        return CompanyPersistenceMapper.fromEntity(updated);
     }
 
     private static @NonNull RegisteredAddressJPAEntity updateRegisteredAddressJPAEntity(

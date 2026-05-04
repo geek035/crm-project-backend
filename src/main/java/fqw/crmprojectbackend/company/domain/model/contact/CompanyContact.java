@@ -1,14 +1,16 @@
 package fqw.crmprojectbackend.company.domain.model.contact;
 
 import fqw.crmprojectbackend.company.domain.model.contact.individual.IndividualContact;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class CompanyContact {
-    private final CompanyContactID id;
-    private final IndividualContact individualContact;
-    private final CompanyContactRole role;
-    private final CompanyContactStatus status;
+    private CompanyContactID id;
+    private IndividualContact individualContact;
+    private CompanyContactRole role;
+    private CompanyContactStatus status;
 
     public static CompanyContact createNew(
             IndividualContact contact,
@@ -22,4 +24,9 @@ public class CompanyContact {
                 role,
                 status);
     }
+
+    public void updateRole(CompanyContactRoleCode code) {
+        this.role = new CompanyContactRole(code);
+    }
+
 }

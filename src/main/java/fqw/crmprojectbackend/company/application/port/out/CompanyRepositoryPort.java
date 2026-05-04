@@ -1,5 +1,6 @@
 package fqw.crmprojectbackend.company.application.port.out;
 
+import fqw.crmprojectbackend.company.application.dto.CompanyDTO;
 import fqw.crmprojectbackend.company.application.query.CompanyQueryParams;
 import fqw.crmprojectbackend.company.application.request.CompanyUpdateRequest;
 import fqw.crmprojectbackend.company.domain.model.company.Company;
@@ -14,7 +15,7 @@ public interface CompanyRepositoryPort {
     boolean existByID(CompanyID id);
 
     CompanyID add(Company company);
-    Company update(CompanyID id, CompanyUpdateRequest company);
+    CompanyDTO updateByOrigin(CompanyDTO origin);
 
     long getTotal();
     Optional<Company> findByID(CompanyID id);

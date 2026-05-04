@@ -56,7 +56,7 @@ public class CompanyContactAddService implements CompanyContactAddUseCase {
                 .getByCode(command.roleCode()));
 
         var contact = company.addContact(individual, role);
-        var request = CompanyContactApplicationMapper.toRequest(companyIDVO, contact);
+        var request = CompanyContactApplicationMapper.toRequest(companyIDVO.getValue(), contact);
 
         return companyContactRepositoryPort.addContact(request);
     }

@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public record CompanyContactDTO(
         UUID id,
-        IndividualContactDTO individualContact,
+        IndividualContactDTO individual,
         DirectoryEntryDTO role,
         DirectoryEntryDTO status) {
 }

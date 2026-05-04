@@ -1,11 +1,23 @@
 package fqw.crmprojectbackend.individual.adapter.out.persistence.mapper;
 
 import fqw.crmprojectbackend.individual.adapter.out.persistence.entity.IndividualJPAEntity;
+import fqw.crmprojectbackend.individual.application.dto.IndividualDTO;
 import fqw.crmprojectbackend.individual.domain.model.Individual;
 import org.springframework.stereotype.Component;
 
 public class IndividualPersistenceMapper {
     private IndividualPersistenceMapper() {}
+
+    public static IndividualDTO fromEntity(IndividualJPAEntity entity) {
+        return new IndividualDTO(
+                entity.getId(),
+                entity.getFirstName(),
+                entity.getSecondName(),
+                entity.getSurname(),
+                entity.getEmail(),
+                entity.getPhoneNumber(),
+                entity.getBirthdate());
+    }
 
     public static IndividualJPAEntity fromDomainModel(Individual individual) {
         return new IndividualJPAEntity(

@@ -1,8 +1,9 @@
 package fqw.crmprojectbackend.company.domain.model.company;
 
+import fqw.crmprojectbackend.company.application.dto.RegisteredAddressDTO;
 import fqw.crmprojectbackend.company.domain.exception.company.CompanyIllegalLifecycleChangeException;
 import fqw.crmprojectbackend.company.domain.exception.company.CompanyIllegalLifecycleStatusException;
-import fqw.crmprojectbackend.company.domain.model.adress.RegisteredAddress;
+import fqw.crmprojectbackend.company.domain.model.adress.*;
 import fqw.crmprojectbackend.company.domain.model.contact.CompanyContact;
 import fqw.crmprojectbackend.company.domain.model.contact.CompanyContactRole;
 import fqw.crmprojectbackend.company.domain.model.contact.individual.IndividualContact;
@@ -64,6 +65,37 @@ public class Company {
             IndividualContact individualContact,
             CompanyContactRole contactRole) {
         return CompanyContact.createNew(individualContact, contactRole);
+    }
+
+    public void setOfficialName(String officialName) {
+        this.officialName = new CompanyOfficialName(officialName);
+    }
+
+    public void setCommercialName(String commercialName) {
+        this.commercialName = new CompanyCommercialName(commercialName);
+    }
+
+    public void setINN(String inn) {
+        this.inn = new CompanyINN(inn);
+    }
+
+    public void setKPP(String kpp) {
+        this.kpp = new CompanyKPP(kpp);
+    }
+
+    public void changeClientSegment(String clientSegmentCode) {
+        this.clientSegment = new CompanyClientSegment(CompanyClientSegmentCode.getByCode(clientSegmentCode));
+    }
+
+    public void updateRegisteredAddress(RegisteredAddressDTO origin) {
+        this.registeredAddress = new RegisteredAddress(
+                new RegisteredAddressCountry(origin.country()),
+                new RegisteredAddressRegion(origin.region()),
+                new RegisteredAddressCity(origin.city()),
+                new RegisteredAddressStreet(origin.street()),
+                new RegisteredAddressBuilding(origin.building()),
+                new RegisteredAddressOffice(origin.office()),
+                new RegisteredAddressPostalCode(origin.postalCode()));
     }
 
     public void changeLifecycle(CompanyLifecycleStatus lifecycleStatus) {
