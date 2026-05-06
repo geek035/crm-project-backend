@@ -19,6 +19,11 @@ public class CompanyQueryService implements CompanyQueryUseCase {
     private final CompanyRepositoryPort companyRepositoryPort;
 
     @Override
+    public boolean existsByID(UUID id) {
+        return this.companyRepositoryPort.existByID(CompanyID.from(id));
+    }
+
+    @Override
     public CompanyDTO findById(UUID id) {
         var company = this.companyRepositoryPort.findByID(CompanyID.from(id))
                 .orElseThrow(() -> new CompanyNotExistsException(String.format(
