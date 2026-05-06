@@ -12,7 +12,8 @@ public enum HTTPErrorCode {
     CONFLICT(HttpStatus.CONFLICT, "Конфликт"),
     FORBIDDEN(HttpStatus.FORBIDDEN, "Запрещенный ресурс"),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "Ошибка авторизации"),
-    INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Внутренняя ошибка сервера");
+    INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Внутренняя ошибка сервера"),
+    UNPROCESSABLE_CONTENT(HttpStatus.UNPROCESSABLE_CONTENT, "Ошибка бизнес-логики");
 
     private final HttpStatus status;
     private final String title;

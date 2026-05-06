@@ -3,10 +3,7 @@ package fqw.crmprojectbackend.common.persistent.jpa.spectification;
 import fqw.crmprojectbackend.common.query.criterion.filter.FilterCriterionMatchMode;
 import fqw.crmprojectbackend.common.query.criterion.filter.FilterCriterion;
 import fqw.crmprojectbackend.common.query.UnknowQueryPropertyException;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
@@ -55,6 +52,22 @@ public class FilterSpecificationBuilder<T> {
         return specification;
     }
 
+    private Path<?> resolvePath(Root<T> root, String field) {
+        if (!field.contains(".")) {
+            return root.get(field);
+        }
+
+        String[] parts = field.split("\\.");
+        From<?, ?> from = root;
+
+        for (int i = 0; i < parts.length - 1; i++) {
+            from = from.join(parts[i]);
+        }
+
+        return from.get(parts[parts.length - 1]);
+    }
+
+
     @RequiredArgsConstructor
     private class FilterSpecification implements Specification<T> {
 
@@ -67,26 +80,33 @@ public class FilterSpecificationBuilder<T> {
                 @NonNull CriteriaBuilder criteriaBuilder) {
 
             final String containsFormat = String.format("%%%s%%", filter.value().toString());
+            var path = resolvePath(root, filter.field());
 
             try {
                 return switch (this.filter.mode()) {
-                    case FilterCriterionMatchMode.STARTS_WITH -> criteriaBuilder.like(
-                            root.get(filter.field()), String.format("%s%%", filter.value()));
+                    case STARTS_WITH -> criteriaBuilder.like(
+                            path.as(String.class),
+                            String.format("%s%%", filter.value()));
 
-                    case FilterCriterionMatchMode.CONTAINS -> criteriaBuilder.like(
-                            root.get(filter.field()), containsFormat);
+                    case CONTAINS -> criteriaBuilder.like(
+                            path.as(String.class),
+                            containsFormat);
 
-                    case FilterCriterionMatchMode.NOT_CONTAINS -> criteriaBuilder.notLike(
-                            root.get(filter.field()), containsFormat);
+                    case NOT_CONTAINS -> criteriaBuilder.notLike(
+                            path.as(String.class),
+                            containsFormat);
 
-                    case FilterCriterionMatchMode.ENDS_WITH -> criteriaBuilder.like(
-                            root.get(filter.field()), String.format("%%%s", filter.value()));
+                    case ENDS_WITH -> criteriaBuilder.like(
+                            path.as(String.class),
+                            String.format("%%%s", filter.value()));
 
-                    case FilterCriterionMatchMode.EQUALS -> criteriaBuilder.equal(
-                            root.get(filter.field()), filter.value());
+                    case EQUALS -> criteriaBuilder.equal(
+                            path,
+                            filter.value());
 
-                    case FilterCriterionMatchMode.NOT_EQUALS -> criteriaBuilder.notEqual(
-                            root.get(filter.field()), filter.value());
+                    case NOT_EQUALS -> criteriaBuilder.notEqual(
+                            path,
+                            filter.value());
                 };
             } catch (IllegalArgumentException exception) {
                 throw new UnknowQueryPropertyException(

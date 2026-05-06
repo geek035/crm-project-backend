@@ -6,7 +6,10 @@ import fqw.crmprojectbackend.individual.application.mapper.IndividualApplication
 import fqw.crmprojectbackend.individual.application.port.in.IndividualUpdateUseCase;
 import fqw.crmprojectbackend.individual.application.port.out.IndividualRepositoryPort;
 import fqw.crmprojectbackend.individual.domain.exception.IndividualDuplicateEmailException;
+import fqw.crmprojectbackend.individual.domain.exception.IndividualNotExistsException;
 import fqw.crmprojectbackend.individual.domain.model.IndividualEmail;
+import fqw.crmprojectbackend.individual.domain.model.IndividualID;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
@@ -17,10 +20,18 @@ public class IndividualUpdateService implements IndividualUpdateUseCase {
     private final IndividualRepositoryPort individualRepositoryPort;
 
     @Override
+    @Transactional
     public IndividualDTO update(@NonNull IndividualUpdateCommand command) {
+        var id = IndividualID.from(command.id());
         var email = new IndividualEmail(command.email());
-        var individualByEmail = this.individualRepositoryPort.findByEmail(email);
 
+        if (!this.individualRepositoryPort.existByID(id)) {
+            throw new IndividualNotExistsException(String.format(
+                    "Физ. лица с идентификатором '%s' не существует",
+                    command.id()));
+        }
+
+        var individualByEmail = this.individualRepositoryPort.findByEmail(email);
         if (individualByEmail.isPresent() && !individualByEmail.get().getId().getValue().equals(command.id())) {
             throw new IndividualDuplicateEmailException( String.format(
                     "Физ. лицо с email '%s' уже существует",

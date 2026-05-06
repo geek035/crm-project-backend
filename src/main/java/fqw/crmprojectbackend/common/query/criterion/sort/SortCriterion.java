@@ -1,3 +1,9 @@
 package fqw.crmprojectbackend.common.query.criterion.sort;
 
-public record SortCriterion(String field, SortCriterionDirection direction) {}
+import jakarta.validation.constraints.NotNull;
+
+public record SortCriterion(
+        @NotNull
+        String field,
+        @NotNull
+        SortCriterionDirection direction) {}

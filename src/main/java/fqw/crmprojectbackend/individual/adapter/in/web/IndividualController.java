@@ -22,9 +22,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-@RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "individuals")
+@RequiredArgsConstructor
 public class IndividualController {
     private final IndividualAddUseCase individualAddUseCase;
     private final IndividualQueryUseCase individualQueryUseCase;
