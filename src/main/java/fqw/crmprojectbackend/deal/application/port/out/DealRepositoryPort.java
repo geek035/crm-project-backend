@@ -18,6 +18,8 @@ public interface DealRepositoryPort {
     long getTotal();
     Optional<DealDTO> findByID(UUID id);
     List<DealDTO> findByParams(DealQueryParams params);
+    List<DealDTO> findByCompanyID(UUID companyID, DealQueryParams params);
+    List<DealDTO> findByIndividualID(UUID individualID, DealQueryParams params);
 
 
 }

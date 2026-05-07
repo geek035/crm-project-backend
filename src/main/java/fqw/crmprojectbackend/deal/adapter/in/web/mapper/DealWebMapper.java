@@ -3,8 +3,12 @@ package fqw.crmprojectbackend.deal.adapter.in.web.mapper;
 import fqw.crmprojectbackend.common.query.BaseQueryDTO;
 import fqw.crmprojectbackend.common.query.criterion.filter.FilterCriterion;
 import fqw.crmprojectbackend.common.query.criterion.filter.FilterCriterionMatchMode;
+import fqw.crmprojectbackend.deal.adapter.in.web.request.DealChangeStageDTO;
+import fqw.crmprojectbackend.deal.adapter.in.web.request.DealChangeStatusDTO;
 import fqw.crmprojectbackend.deal.adapter.in.web.request.DealCreateDTO;
 import fqw.crmprojectbackend.deal.adapter.in.web.request.DealUpdateDTO;
+import fqw.crmprojectbackend.deal.application.command.DealChangeStageCommand;
+import fqw.crmprojectbackend.deal.application.command.DealChangeStatusCommand;
 import fqw.crmprojectbackend.deal.application.command.DealCreateCommand;
 import fqw.crmprojectbackend.deal.application.command.DealUpdateCommand;
 import fqw.crmprojectbackend.deal.application.query.DealQueryParams;
@@ -32,6 +36,18 @@ public class DealWebMapper {
                 dto.priorityCode(),
                 dto.sourceCode(),
                 dto.expectedCloseDate());
+    }
+
+    public static DealChangeStageCommand toCommand(DealChangeStageDTO dto) {
+        return new DealChangeStageCommand(
+                dto.stageCode(),
+                dto.closeInfo());
+    }
+
+    public static DealChangeStatusCommand toCommand(DealChangeStatusDTO dto) {
+        return new DealChangeStatusCommand(
+                dto.statusCode(),
+                dto.closeInfo());
     }
 
     public static DealQueryParams toQuery(BaseQueryDTO dto) {

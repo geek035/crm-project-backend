@@ -31,4 +31,18 @@ public class DealQueryService implements DealQueryUseCase {
 
         return new DealPageDTO(total, data);
     }
+
+    @Override
+    public DealPageDTO findByCompanyID(UUID companyID, DealQueryParams params) {
+        var data = this.dealRepositoryPort.findByCompanyID(companyID, params);
+
+        return new DealPageDTO((long) data.size(), data);
+    }
+
+    @Override
+    public DealPageDTO findByIndividualID(UUID individualID, DealQueryParams params) {
+        var data = this.dealRepositoryPort.findByIndividualID(individualID, params);
+
+        return new DealPageDTO((long) data.size(), data);
+    }
 }

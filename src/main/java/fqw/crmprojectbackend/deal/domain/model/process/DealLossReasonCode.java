@@ -7,13 +7,13 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum DealLossReasonCode {
-    CLIENT_REFUSED("Client refused"),
-    BANK_REJECTED("Bank rejected"),
-    CONDITIONS_NOT_ACCEPTED("Conditions not accepted"),
-    COMPETITOR("Competitor"),
-    DUPLICATE("Duplicate"),
-    CANCELLED_BY_CLIENT("Cancelled by client"),
-    OTHER("Other");
+    CLIENT_REFUSED("Клиент отказался"),
+    BANK_REJECTED("Банк отказал"),
+    CONDITIONS_NOT_ACCEPTED("Условия не согласованы"),
+    COMPETITOR("Выбран конкурент"),
+    DUPLICATE("Дубль сделки"),
+    CANCELLED_BY_CLIENT("Отменена клиентом"),
+    OTHER("Другая причина");
 
     private final String description;
 

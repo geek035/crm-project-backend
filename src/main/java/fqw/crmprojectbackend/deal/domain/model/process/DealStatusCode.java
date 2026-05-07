@@ -1,5 +1,6 @@
 package fqw.crmprojectbackend.deal.domain.model.process;
 
+import fqw.crmprojectbackend.deal.domain.exception.DealIllegalStatusException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -12,6 +13,17 @@ public enum DealStatusCode {
     CANCELLED("Cancelled");
 
     private final String description;
+
+    public static DealStatusCode getByCode(String code) {
+        return switch (code) {
+            case "OPEN" -> DealStatusCode.OPEN;
+            case "SUCCESS" -> DealStatusCode.SUCCESS;
+            case "FAILED" -> DealStatusCode.FAILED;
+            case "CANCELLED" -> DealStatusCode.CANCELLED;
+            default -> throw new DealIllegalStatusException(
+                    String.format("Неизвестный статус сделки '%s'", code));
+        };
+    }
 
     public static DealStatusCode fromStage(DealStageCode stage) {
         return switch (stage) {

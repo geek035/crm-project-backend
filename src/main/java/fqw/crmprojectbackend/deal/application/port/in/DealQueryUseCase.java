@@ -9,4 +9,6 @@ import java.util.UUID;
 public interface DealQueryUseCase {
     DealDTO findByID(UUID id);
     DealPageDTO findByParams(DealQueryParams params);
+    DealPageDTO findByCompanyID(UUID companyID, DealQueryParams params);
+    DealPageDTO findByIndividualID(UUID individualID, DealQueryParams params);
 }

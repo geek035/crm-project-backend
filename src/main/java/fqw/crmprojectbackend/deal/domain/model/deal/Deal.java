@@ -87,8 +87,13 @@ public class Deal {
     }
 
     public void changeStage(DealStage nextStage) {
+        this.changeStage(nextStage, null);
+    }
+
+    public void changeStage(DealStage nextStage, DealLossReason lossReason) {
         this.ensureNotClosed();
         this.checkStageTransition(nextStage.code());
+        this.checkCloseInfo(nextStage.code(), lossReason);
 
         this.stage = nextStage;
         this.status = new DealStatus(DealStatusCode.fromStage(nextStage.code()));
@@ -96,29 +101,44 @@ public class Deal {
 
         if (nextStage.code() == DealStageCode.WON) {
             this.closeInfo = DealCloseInfo.won(LocalDate.now());
+        } else if (nextStage.code() == DealStageCode.LOST || nextStage.code() == DealStageCode.CANCELLED) {
+            this.closeInfo = DealCloseInfo.failed(LocalDate.now(), lossReason);
+        } else {
+            this.closeInfo = null;
         }
     }
 
     public void closeAsWon() {
-        this.changeStage(new DealStage(DealStageCode.WON));
+        this.changeStage(new DealStage(DealStageCode.WON), null);
     }
 
     public void closeAsLost(DealLossReason lossReason) {
-        this.ensureNotClosed();
-        this.checkStageTransition(DealStageCode.LOST);
-        this.stage = new DealStage(DealStageCode.LOST);
-        this.status = new DealStatus(DealStatusCode.FAILED);
-        this.probability = new DealProbability(0);
-        this.closeInfo = DealCloseInfo.failed(LocalDate.now(), lossReason);
+        this.changeStage(new DealStage(DealStageCode.LOST), lossReason);
     }
 
     public void cancel(DealLossReason lossReason) {
-        this.ensureNotClosed();
-        this.checkStageTransition(DealStageCode.CANCELLED);
-        this.stage = new DealStage(DealStageCode.CANCELLED);
-        this.status = new DealStatus(DealStatusCode.CANCELLED);
-        this.probability = new DealProbability(0);
-        this.closeInfo = DealCloseInfo.failed(LocalDate.now(), lossReason);
+        this.changeStage(new DealStage(DealStageCode.CANCELLED), lossReason);
+    }
+
+    public void changeStatus(DealStatusCode nextStatus, DealLossReason lossReason) {
+        switch (nextStatus) {
+            case OPEN -> {
+                this.ensureNotClosed();
+
+                if (lossReason != null) {
+                    throw new DealIllegalStageChangeException(
+                            "Причина закрытия не может быть указана для открытой сделки");
+                }
+
+                this.status = new DealStatus(DealStatusCode.OPEN);
+                this.probability = new DealProbability(defaultProbability(this.stage.code()));
+                this.closeInfo = null;
+            }
+
+            case SUCCESS -> this.changeStage(new DealStage(DealStageCode.WON), lossReason);
+            case FAILED -> this.changeStage(new DealStage(DealStageCode.LOST), lossReason);
+            case CANCELLED -> this.changeStage(new DealStage(DealStageCode.CANCELLED), lossReason);
+        }
     }
 
     public void changeProduct(DealProduct product) {
@@ -171,6 +191,24 @@ public class Deal {
                     "Невозможно изменить стадию сделки с '%s' на '%s'",
                     this.stage.code(),
                     nextStage));
+        }
+    }
+
+    private void checkCloseInfo(DealStageCode nextStage, DealLossReason lossReason) {
+        if (nextStage == DealStageCode.WON && lossReason != null) {
+            throw new DealIllegalStageChangeException(
+                    "Причина закрытия не может быть указана для успешно завершенной сделки");
+        }
+
+        if ((nextStage == DealStageCode.LOST || nextStage == DealStageCode.CANCELLED)
+                && lossReason == null) {
+            throw new DealIllegalStageChangeException(
+                    "Причина закрытия обязательна для проигранной или отмененной сделки");
+        }
+
+        if (!nextStage.isFinal() && lossReason != null) {
+            throw new DealIllegalStageChangeException(
+                    "Причина закрытия может быть указана только при закрытии сделки");
         }
     }
 

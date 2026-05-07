@@ -114,7 +114,7 @@ public class DealApplicationMapper {
                 new DealProduct(DealProductCode.getByCode(dto.product().code())),
                 DealAmount.of(dto.amount(), dto.currency().code()),
                 new DealStage(DealStageCode.getByCode(dto.stage().code())),
-                new DealStatus(DealStatusCode.valueOf(dto.status().code())),
+                new DealStatus(DealStatusCode.getByCode(dto.status().code())),
                 new DealProbability(dto.probability()),
                 new DealPriority(DealPriorityCode.getByCode(dto.priority().code())),
                 new DealSource(DealSourceCode.getByCode(dto.source().code())),

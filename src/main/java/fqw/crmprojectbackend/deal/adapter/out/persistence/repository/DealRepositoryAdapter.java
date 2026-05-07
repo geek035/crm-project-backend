@@ -1,6 +1,8 @@
 package fqw.crmprojectbackend.deal.adapter.out.persistence.repository;
 
 import fqw.crmprojectbackend.common.persistent.jpa.spectification.FilterSpecificationBuilder;
+import fqw.crmprojectbackend.common.query.criterion.filter.FilterCriterion;
+import fqw.crmprojectbackend.common.query.criterion.filter.FilterCriterionMatchMode;
 import fqw.crmprojectbackend.deal.adapter.out.persistence.entity.DealCurrencyJPAEntity;
 import fqw.crmprojectbackend.deal.adapter.out.persistence.entity.DealClientTypeJPAEntity;
 import fqw.crmprojectbackend.deal.adapter.out.persistence.entity.DealJPAEntity;
@@ -103,6 +105,50 @@ public class DealRepositoryAdapter implements DealRepositoryPort {
         Specification<DealJPAEntity> specification =
                 new FilterSpecificationBuilder<DealJPAEntity>()
                         .with(params.filters())
+                        .build();
+
+        var orders = params.sort().stream()
+                .map(it -> new Sort.Order(
+                        Sort.Direction.fromString(it.direction().toString().toLowerCase()),
+                        it.field()))
+                .toList();
+
+        var sort = Sort.by(orders);
+        var pageRequest = PageRequest.of(params.pageNumber(), params.pageSize(), sort);
+        var page = this.dealSpringDataRepository.findAll(specification, pageRequest);
+
+        return page.stream()
+                .map(DealPersistenceMapper::fromEntity)
+                .toList();
+    }
+
+    @Override
+    public List<DealDTO> findByCompanyID(UUID companyID, DealQueryParams params) {
+        return this.findByParamsWithRequiredFilter(
+                params,
+                new FilterCriterion(
+                        "companyID",
+                        companyID,
+                        FilterCriterionMatchMode.EQUALS));
+    }
+
+    @Override
+    public List<DealDTO> findByIndividualID(UUID individualID, DealQueryParams params) {
+        return this.findByParamsWithRequiredFilter(
+                params,
+                new FilterCriterion(
+                        "individualID",
+                        individualID,
+                        FilterCriterionMatchMode.EQUALS));
+    }
+
+    private List<DealDTO> findByParamsWithRequiredFilter(
+            DealQueryParams params,
+            FilterCriterion requiredFilter) {
+        Specification<DealJPAEntity> specification =
+                new FilterSpecificationBuilder<DealJPAEntity>()
+                        .with(params.filters())
+                        .with(requiredFilter)
                         .build();
 
         var orders = params.sort().stream()

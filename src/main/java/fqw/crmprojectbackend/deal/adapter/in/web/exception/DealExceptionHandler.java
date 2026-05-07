@@ -51,6 +51,7 @@ public class DealExceptionHandler {
             DealIllegalProductException.class,
             DealIllegalSourceException.class,
             DealIllegalStageException.class,
+            DealIllegalStatusException.class,
             IllegalArgumentException.class
     })
     public ResponseEntity<WebError> handleDealInvalidDataException(
