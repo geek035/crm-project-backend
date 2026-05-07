@@ -146,7 +146,13 @@ public class Deal {
         this.expectedCloseDate = expectedCloseDate;
     }
 
+    public void changeTitle(String title) {
+        this.ensureNotClosed();
+        this.title = new DealTitle(title);
+    }
+
     public void updateDescription(String description) {
+        this.ensureNotClosed();
         this.description = new DealDescription(description);
     }
 

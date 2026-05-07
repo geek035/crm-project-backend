@@ -1,13 +1,22 @@
 package fqw.crmprojectbackend.deal.adapter.out.persistence.repository;
 
 import fqw.crmprojectbackend.common.persistent.jpa.spectification.FilterSpecificationBuilder;
+import fqw.crmprojectbackend.deal.adapter.out.persistence.entity.DealCurrencyJPAEntity;
+import fqw.crmprojectbackend.deal.adapter.out.persistence.entity.DealClientTypeJPAEntity;
 import fqw.crmprojectbackend.deal.adapter.out.persistence.entity.DealJPAEntity;
+import fqw.crmprojectbackend.deal.adapter.out.persistence.entity.DealLossReasonJPAEntity;
+import fqw.crmprojectbackend.deal.adapter.out.persistence.entity.DealPriorityJPAEntity;
+import fqw.crmprojectbackend.deal.adapter.out.persistence.entity.DealProductJPAEntity;
+import fqw.crmprojectbackend.deal.adapter.out.persistence.entity.DealSourceJPAEntity;
+import fqw.crmprojectbackend.deal.adapter.out.persistence.entity.DealStageJPAEntity;
+import fqw.crmprojectbackend.deal.adapter.out.persistence.entity.DealStatusJPAEntity;
 import fqw.crmprojectbackend.deal.adapter.out.persistence.mapper.DealPersistenceMapper;
 import fqw.crmprojectbackend.deal.application.dto.DealDTO;
 import fqw.crmprojectbackend.deal.application.port.out.DealRepositoryPort;
 import fqw.crmprojectbackend.deal.application.query.DealQueryParams;
 import fqw.crmprojectbackend.deal.application.request.DealAddRequest;
 import fqw.crmprojectbackend.deal.domain.model.deal.DealNumber;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -22,6 +31,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class DealRepositoryAdapter implements DealRepositoryPort {
     private final DealSpringDataRepository dealSpringDataRepository;
+    private final DealClientTypeSpringDataRepository clientTypeSpringDataRepository;
+    private final DealProductSpringDataRepository productSpringDataRepository;
+    private final DealCurrencySpringDataRepository currencySpringDataRepository;
+    private final DealStageSpringDataRepository stageSpringDataRepository;
+    private final DealStatusSpringDataRepository statusSpringDataRepository;
+    private final DealPrioritySpringDataRepository prioritySpringDataRepository;
+    private final DealSourceSpringDataRepository sourceSpringDataRepository;
+    private final DealLossReasonSpringDataRepository lossReasonSpringDataRepository;
 
     @Override
     public boolean existsByNumber(DealNumber number) {
@@ -34,6 +51,39 @@ public class DealRepositoryAdapter implements DealRepositoryPort {
         var saved = this.dealSpringDataRepository.save(deal);
 
         return saved.getId();
+    }
+
+    @Override
+    public DealDTO updateByOrigin(DealDTO origin) {
+        var dealJPA = this.dealSpringDataRepository
+                .findById(origin.id())
+                .orElseThrow(() -> new EntityNotFoundException(String.format(
+                        "Сделка с идентификатором '%s' не найдена",
+                        origin.id())));
+
+        dealJPA.setNumber(origin.number());
+        dealJPA.setClientType(this.getClientType(origin.clientType().code()));
+        dealJPA.setIndividualID(origin.individualID());
+        dealJPA.setCompanyID(origin.companyID());
+        dealJPA.setTitle(origin.title());
+        dealJPA.setDescription(origin.description());
+        dealJPA.setProduct(this.getProduct(origin.product().code()));
+        dealJPA.setAmount(origin.amount());
+        dealJPA.setCurrency(this.getCurrency(origin.currency().code()));
+        dealJPA.setStage(this.getStage(origin.stage().code()));
+        dealJPA.setStatus(this.getStatus(origin.status().code()));
+        dealJPA.setProbability(origin.probability());
+        dealJPA.setPriority(this.getPriority(origin.priority().code()));
+        dealJPA.setSource(this.getSource(origin.source().code()));
+        dealJPA.setExpectedCloseDate(origin.expectedCloseDate());
+        dealJPA.setActualCloseDate(origin.actualCloseDate());
+        dealJPA.setLossReason(origin.lossReason() == null
+                ? null
+                : this.getLossReason(origin.lossReason().code()));
+
+        var updated = this.dealSpringDataRepository.save(dealJPA);
+
+        return DealPersistenceMapper.fromEntity(updated);
     }
 
     @Override
@@ -68,5 +118,69 @@ public class DealRepositoryAdapter implements DealRepositoryPort {
         return page.stream()
                 .map(DealPersistenceMapper::fromEntity)
                 .toList();
+    }
+
+    private DealClientTypeJPAEntity getClientType(String code) {
+        return this.clientTypeSpringDataRepository
+                .findByCode(code)
+                .orElseThrow(() -> new EntityNotFoundException(String.format(
+                        "Тип клиента сделки с кодом '%s' не найден",
+                        code)));
+    }
+
+    private DealProductJPAEntity getProduct(String code) {
+        return this.productSpringDataRepository
+                .findByCode(code)
+                .orElseThrow(() -> new EntityNotFoundException(String.format(
+                        "Продукт сделки с кодом '%s' не найден",
+                        code)));
+    }
+
+    private DealCurrencyJPAEntity getCurrency(String code) {
+        return this.currencySpringDataRepository
+                .findByCode(code)
+                .orElseThrow(() -> new EntityNotFoundException(String.format(
+                        "Валюта сделки с кодом '%s' не найдена",
+                        code)));
+    }
+
+    private DealStageJPAEntity getStage(String code) {
+        return this.stageSpringDataRepository
+                .findByCode(code)
+                .orElseThrow(() -> new EntityNotFoundException(String.format(
+                        "Стадия сделки с кодом '%s' не найдена",
+                        code)));
+    }
+
+    private DealStatusJPAEntity getStatus(String code) {
+        return this.statusSpringDataRepository
+                .findByCode(code)
+                .orElseThrow(() -> new EntityNotFoundException(String.format(
+                        "Статус сделки с кодом '%s' не найден",
+                        code)));
+    }
+
+    private DealPriorityJPAEntity getPriority(String code) {
+        return this.prioritySpringDataRepository
+                .findByCode(code)
+                .orElseThrow(() -> new EntityNotFoundException(String.format(
+                        "Приоритет сделки с кодом '%s' не найден",
+                        code)));
+    }
+
+    private DealSourceJPAEntity getSource(String code) {
+        return this.sourceSpringDataRepository
+                .findByCode(code)
+                .orElseThrow(() -> new EntityNotFoundException(String.format(
+                        "Источник сделки с кодом '%s' не найден",
+                        code)));
+    }
+
+    private DealLossReasonJPAEntity getLossReason(String code) {
+        return this.lossReasonSpringDataRepository
+                .findByCode(code)
+                .orElseThrow(() -> new EntityNotFoundException(String.format(
+                        "Причина проигрыша сделки с кодом '%s' не найдена",
+                        code)));
     }
 }

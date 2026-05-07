@@ -3,10 +3,12 @@ package fqw.crmprojectbackend.deal.adapter.in.web;
 import fqw.crmprojectbackend.common.query.BaseQueryDTO;
 import fqw.crmprojectbackend.deal.adapter.in.web.mapper.DealWebMapper;
 import fqw.crmprojectbackend.deal.adapter.in.web.request.DealCreateDTO;
+import fqw.crmprojectbackend.deal.adapter.in.web.request.DealUpdateDTO;
 import fqw.crmprojectbackend.deal.application.dto.DealDTO;
 import fqw.crmprojectbackend.deal.application.dto.DealPageDTO;
 import fqw.crmprojectbackend.deal.application.port.in.DealCreateUseCase;
 import fqw.crmprojectbackend.deal.application.port.in.DealQueryUseCase;
+import fqw.crmprojectbackend.deal.application.port.in.DealUpdateUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,7 @@ import java.util.UUID;
 public class DealController {
     private final DealCreateUseCase dealCreateUseCase;
     private final DealQueryUseCase dealQueryUseCase;
+    private final DealUpdateUseCase dealUpdateUseCase;
 
     @PostMapping(path = "create")
     public ResponseEntity<UUID> createDeal(
@@ -37,6 +40,16 @@ public class DealController {
         var deal = this.dealQueryUseCase.findByID(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(deal);
+    }
+
+    @PutMapping(path = "{id}")
+    public ResponseEntity<DealDTO> update(
+            @PathVariable @Valid UUID id,
+            @RequestBody @Valid DealUpdateDTO body) {
+        var command = DealWebMapper.toCommand(body);
+        var updated = this.dealUpdateUseCase.update(id, command);
+
+        return ResponseEntity.status(HttpStatus.OK).body(updated);
     }
 
     @PostMapping(path = "query")

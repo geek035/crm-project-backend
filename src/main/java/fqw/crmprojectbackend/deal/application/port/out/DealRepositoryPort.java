@@ -11,9 +11,13 @@ import java.util.UUID;
 
 public interface DealRepositoryPort {
     boolean existsByNumber(DealNumber number);
+
     UUID add(DealAddRequest origin);
+    DealDTO updateByOrigin(DealDTO origin);
 
     long getTotal();
     Optional<DealDTO> findByID(UUID id);
     List<DealDTO> findByParams(DealQueryParams params);
+
+
 }

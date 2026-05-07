@@ -3,8 +3,28 @@ package fqw.crmprojectbackend.deal.application.mapper;
 import fqw.crmprojectbackend.common.dto.DirectoryEntryDTO;
 import fqw.crmprojectbackend.deal.application.dto.DealDTO;
 import fqw.crmprojectbackend.deal.application.request.DealAddRequest;
+import fqw.crmprojectbackend.deal.domain.model.client.DealClient;
 import fqw.crmprojectbackend.deal.domain.model.client.DealClientTypeCode;
 import fqw.crmprojectbackend.deal.domain.model.deal.Deal;
+import fqw.crmprojectbackend.deal.domain.model.deal.DealDescription;
+import fqw.crmprojectbackend.deal.domain.model.deal.DealID;
+import fqw.crmprojectbackend.deal.domain.model.deal.DealNumber;
+import fqw.crmprojectbackend.deal.domain.model.deal.DealProbability;
+import fqw.crmprojectbackend.deal.domain.model.deal.DealTitle;
+import fqw.crmprojectbackend.deal.domain.model.money.DealAmount;
+import fqw.crmprojectbackend.deal.domain.model.process.DealCloseInfo;
+import fqw.crmprojectbackend.deal.domain.model.process.DealLossReason;
+import fqw.crmprojectbackend.deal.domain.model.process.DealLossReasonCode;
+import fqw.crmprojectbackend.deal.domain.model.process.DealPriority;
+import fqw.crmprojectbackend.deal.domain.model.process.DealPriorityCode;
+import fqw.crmprojectbackend.deal.domain.model.process.DealSource;
+import fqw.crmprojectbackend.deal.domain.model.process.DealSourceCode;
+import fqw.crmprojectbackend.deal.domain.model.process.DealStage;
+import fqw.crmprojectbackend.deal.domain.model.process.DealStageCode;
+import fqw.crmprojectbackend.deal.domain.model.process.DealStatus;
+import fqw.crmprojectbackend.deal.domain.model.process.DealStatusCode;
+import fqw.crmprojectbackend.deal.domain.model.product.DealProduct;
+import fqw.crmprojectbackend.deal.domain.model.product.DealProductCode;
 
 public class DealApplicationMapper {
     public static DealAddRequest toRequest(Deal deal) {
@@ -82,5 +102,46 @@ public class DealApplicationMapper {
                         : new DirectoryEntryDTO(
                                 deal.getCloseInfo().lossReason().code().name(),
                                 deal.getCloseInfo().lossReason().code().getDescription()));
+    }
+
+    public static Deal toDomainModel(DealDTO dto) {
+        return new Deal(
+                DealID.from(dto.id()),
+                new DealNumber(dto.number()),
+                getClient(dto),
+                new DealTitle(dto.title()),
+                new DealDescription(dto.description()),
+                new DealProduct(DealProductCode.getByCode(dto.product().code())),
+                DealAmount.of(dto.amount(), dto.currency().code()),
+                new DealStage(DealStageCode.getByCode(dto.stage().code())),
+                new DealStatus(DealStatusCode.valueOf(dto.status().code())),
+                new DealProbability(dto.probability()),
+                new DealPriority(DealPriorityCode.getByCode(dto.priority().code())),
+                new DealSource(DealSourceCode.getByCode(dto.source().code())),
+                dto.expectedCloseDate(),
+                getCloseInfo(dto));
+    }
+
+    private static DealClient getClient(DealDTO dto) {
+        var clientTypeCode = DealClientTypeCode.getByCode(dto.clientType().code());
+
+        return switch (clientTypeCode) {
+            case INDIVIDUAL -> DealClient.forIndividual(dto.individualID());
+            case COMPANY -> DealClient.forCompany(dto.companyID());
+        };
+    }
+
+    private static DealCloseInfo getCloseInfo(DealDTO dto) {
+        if (dto.actualCloseDate() == null) {
+            return null;
+        }
+
+        if (dto.lossReason() == null) {
+            return DealCloseInfo.won(dto.actualCloseDate());
+        }
+
+        return DealCloseInfo.failed(
+                dto.actualCloseDate(),
+                new DealLossReason(DealLossReasonCode.getByCode(dto.lossReason().code())));
     }
 }

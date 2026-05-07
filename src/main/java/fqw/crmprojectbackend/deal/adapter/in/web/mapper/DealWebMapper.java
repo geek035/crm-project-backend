@@ -4,7 +4,9 @@ import fqw.crmprojectbackend.common.query.BaseQueryDTO;
 import fqw.crmprojectbackend.common.query.criterion.filter.FilterCriterion;
 import fqw.crmprojectbackend.common.query.criterion.filter.FilterCriterionMatchMode;
 import fqw.crmprojectbackend.deal.adapter.in.web.request.DealCreateDTO;
+import fqw.crmprojectbackend.deal.adapter.in.web.request.DealUpdateDTO;
 import fqw.crmprojectbackend.deal.application.command.DealCreateCommand;
+import fqw.crmprojectbackend.deal.application.command.DealUpdateCommand;
 import fqw.crmprojectbackend.deal.application.query.DealQueryParams;
 
 public class DealWebMapper {
@@ -18,6 +20,15 @@ public class DealWebMapper {
                 dto.productCode(),
                 dto.amount(),
                 dto.currencyCode(),
+                dto.priorityCode(),
+                dto.sourceCode(),
+                dto.expectedCloseDate());
+    }
+
+    public static DealUpdateCommand toCommand(DealUpdateDTO dto) {
+        return new DealUpdateCommand(
+                dto.title(),
+                dto.description(),
                 dto.priorityCode(),
                 dto.sourceCode(),
                 dto.expectedCloseDate());
