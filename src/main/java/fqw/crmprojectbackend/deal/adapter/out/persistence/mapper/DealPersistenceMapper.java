@@ -1,6 +1,8 @@
 package fqw.crmprojectbackend.deal.adapter.out.persistence.mapper;
 
+import fqw.crmprojectbackend.common.dto.DirectoryEntryDTO;
 import fqw.crmprojectbackend.deal.adapter.out.persistence.entity.*;
+import fqw.crmprojectbackend.deal.application.dto.DealDTO;
 import fqw.crmprojectbackend.deal.application.request.DealAddRequest;
 
 public class DealPersistenceMapper {
@@ -27,6 +29,46 @@ public class DealPersistenceMapper {
         deal.setLossReason(referenceLossReason(request.lossReasonCode()));
 
         return deal;
+    }
+
+    public static DealDTO fromEntity(DealJPAEntity entity) {
+        return new DealDTO(
+                entity.getId(),
+                entity.getNumber(),
+                new DirectoryEntryDTO(
+                        entity.getClientType().getCode(),
+                        entity.getClientType().getDescription()),
+                entity.getIndividualID(),
+                entity.getCompanyID(),
+                entity.getTitle(),
+                entity.getDescription(),
+                new DirectoryEntryDTO(
+                        entity.getProduct().getCode(),
+                        entity.getProduct().getDescription()),
+                entity.getAmount(),
+                new DirectoryEntryDTO(
+                        entity.getCurrency().getCode(),
+                        entity.getCurrency().getDescription()),
+                new DirectoryEntryDTO(
+                        entity.getStage().getCode(),
+                        entity.getStage().getDescription()),
+                new DirectoryEntryDTO(
+                        entity.getStatus().getCode(),
+                        entity.getStatus().getDescription()),
+                entity.getProbability(),
+                new DirectoryEntryDTO(
+                        entity.getPriority().getCode(),
+                        entity.getPriority().getDescription()),
+                new DirectoryEntryDTO(
+                        entity.getSource().getCode(),
+                        entity.getSource().getDescription()),
+                entity.getExpectedCloseDate(),
+                entity.getActualCloseDate(),
+                entity.getLossReason() == null
+                        ? null
+                        : new DirectoryEntryDTO(
+                                entity.getLossReason().getCode(),
+                                entity.getLossReason().getDescription()));
     }
 
     private static DealClientTypeJPAEntity referenceClientType(String code) {

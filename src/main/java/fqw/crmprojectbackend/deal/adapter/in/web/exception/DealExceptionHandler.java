@@ -27,9 +27,12 @@ public class DealExceptionHandler {
         return ResponseEntity.status(HTTPErrorCode.CONFLICT.getStatus()).body(error);
     }
 
-    @ExceptionHandler(DealClientNotFoundException.class)
+    @ExceptionHandler({
+            DealClientNotFoundException.class,
+            DealNotExistsException.class
+    })
     public ResponseEntity<WebError> handleDealClientNotFoundException(
-            DealClientNotFoundException exception) {
+            Exception exception) {
         var error = new WebError(
                 HTTPErrorCode.RESOURCE_NOT_FOUND.getStatus().value(),
                 HTTPErrorCode.RESOURCE_NOT_FOUND.getTitle(),
